@@ -9,6 +9,7 @@
 //------------------------------------------------------------------------------
 
 namespace BlueBit.ILF.OutlookAddIn.Properties {
+    using System;
     
     
     /// <summary>
@@ -18,7 +19,7 @@ namespace BlueBit.ILF.OutlookAddIn.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -56,6 +57,29 @@ namespace BlueBit.ILF.OutlookAddIn.Properties {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uwaga!.
+        /// </summary>
+        internal static string OnSendEmailSizeChecker_Caption {
+            get {
+                return ResourceManager.GetString("OnSendEmailSizeChecker_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wysyłasz e-mail do dużej grupy osób, pamiętaj o zasadach:
+        ///- jeśli wiadomość ma duży załącznik (&gt;{0}) wysłanie jej może spowodować problemy z pocztą,
+        ///- zalecane jest podanie w wiadomoci jedynie ścieżki do lokalizacji pliku,
+        ///- jeśli wiadomość ma charakter prywatny w temacie dopisz [PRIV], pozwoli to odpowiednio filtrować wiadomości.
+        ///
+        ///Czy chcesz przerwać wysyłanie?.
+        /// </summary>
+        internal static string OnSendEmailSizeChecker_Message {
+            get {
+                return ResourceManager.GetString("OnSendEmailSizeChecker_Message", resourceCulture);
             }
         }
     }
