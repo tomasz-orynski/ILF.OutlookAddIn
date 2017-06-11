@@ -15,6 +15,8 @@ namespace BlueBit.ILF.OutlookAddIn
         private void InternalStartup()
             => _logger.OnEntryCall(() =>
             {
+                throw new System.Exception("bla!");
+
                 var builder = new ContainerBuilder();
                 builder
                     .RegisterAssemblyTypes(typeof(IComponent).Assembly)
