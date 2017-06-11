@@ -1,0 +1,7 @@
+Aplikacja do zainstalowania w C:\program files (x86)\ILF\OutlookApp
+Rejestr HKEY_CURRENT_USER\Software\ILF\OutlookApp
+Version: tutaj bez znaczenia – bêdziemy sobie wewnêtrznie sprawdzaæ numer 
+Calendar_Prefix:Urlopy;Spotkania;xxx;yyy;zzz – nazwy kalendarzy, które wyœwietlaæ
+Calendar_Default: ten wybrany jako domyœlny
+Email_groups:ILF-WARSZAWA@ilf.com;ILF-POLSKA@ilf.com;xxx;yyy
+Email_Size:2
