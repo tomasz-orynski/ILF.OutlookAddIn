@@ -61,6 +61,24 @@ namespace BlueBit.ILF.OutlookAddIn.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Wybierz.
+        /// </summary>
+        internal static string CmdApply {
+            get {
+                return ResourceManager.GetString("CmdApply", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Anuluj.
+        /// </summary>
+        internal static string CmdCancel {
+            get {
+                return ResourceManager.GetString("CmdCancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Uwaga!.
         /// </summary>
         internal static string OnSendEmailSizeChecker_Caption {

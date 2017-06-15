@@ -17,7 +17,7 @@ namespace BlueBit.ILF.OutlookAddIn.Diagnostics
             }
             catch (Exception e)
             {
-                logger.Error("!!" + name, e);
+                logger.Error(e, "!!" + name);
             }
         }
 
