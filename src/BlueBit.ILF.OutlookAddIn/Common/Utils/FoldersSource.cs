@@ -6,8 +6,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using Outlook = Microsoft.Office.Interop.Outlook;
 
-
-namespace BlueBit.ILF.OutlookAddIn.Components.OnAddAppointmentHandler
+namespace BlueBit.ILF.OutlookAddIn.Common.Utils
 {
     class FoldersSource :
             IDisposable
@@ -41,7 +40,8 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnAddAppointmentHandler
                 .Where(_ => _.Folder.FolderPath != rootFolder.FolderPath)
                 .Select(_ => new { Folder = _.Folder.As<Outlook.Folder>(), _.DisplayName })
                 .Where(_ => folderFilter(_.DisplayName))
-                .Where(_=> CheckFolder(_.Folder))
+                .Where(_ => CheckFolder(_.Folder))
+                .OrderBy(_ => _.DisplayName)
                 .Select(_ => Tuple.Create(_.Folder, folderSelected(_.DisplayName)));
         }
 
@@ -62,15 +62,19 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnAddAppointmentHandler
         private Outlook.Explorer GetExplorer(Outlook.Folder folder, IList<Action> onDisposeActions)
         {
             var explorer = folder.GetExplorer();
-            onDisposeActions.Add(explorer.Close);
+            //onDisposeActions.Add(explorer.Close);
             return explorer;
         }
 
         static bool CheckFolder(Outlook.Folder folder)
         {
+            //TODO-TO
+#if DEBUG
+            return true;
+#else
             try
             {
-                var item = folder.Items.Add(Outlook.OlItemType.olAppointmentItem);
+                var item = (Outlook.AppointmentItem)folder.Items.Add(Outlook.OlItemType.olAppointmentItem);
                 item.Delete();
                 return true;
             }
@@ -78,6 +82,7 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnAddAppointmentHandler
             {
             }
             return false;
+#endif
         }
     }
 }

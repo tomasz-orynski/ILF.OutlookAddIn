@@ -7,7 +7,7 @@ namespace BlueBit.ILF.OutlookAddIn.Diagnostics
 {
     public static class LoggerExtensions
     {
-        private static void HandleEntryCall(Logger logger, Action action, string name = null)
+        public static void EntryCall(Logger logger, Action action, string name)
         {
             try
             {
@@ -20,13 +20,14 @@ namespace BlueBit.ILF.OutlookAddIn.Diagnostics
                 logger.Error(e, "!!" + name);
             }
         }
+        public static void EntryCall(Logger logger, Action action) => EntryCall(logger, action, action.Method.Name);
 
         public static void OnEntryCall(this Logger @this, Action action, [CallerMemberName]string name = null)
         {
             Contract.Assert(@this != null);
             Contract.Assert(action != null);
             Contract.Assert(!string.IsNullOrEmpty(name));
-            HandleEntryCall(@this, action, name);
+            EntryCall(@this, action, name);
         }
 
         public static T OnEntryCall<T>(this Logger @this, Func<T> action, [CallerMemberName]string name = null)
@@ -35,7 +36,7 @@ namespace BlueBit.ILF.OutlookAddIn.Diagnostics
             Contract.Assert(action != null);
             Contract.Assert(!string.IsNullOrEmpty(name));
             var result = default(T);
-            HandleEntryCall(@this, () => result = action());
+            EntryCall(@this, () => result = action(), name);
             return result;
         }
     }

@@ -20,20 +20,19 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnSendEmailSizeChecker
 
         public void Initialize(Outlook.Application app)
         {
-            app.ItemSend += App_ItemSend;
+            app.ItemSend += HandlerExtensions.AsItemSendHandler(OnItemSend, _logger);
         }
 
-        private void App_ItemSend(object Item, ref bool Cancel)
-            => Cancel = _logger.OnEntryCall(() =>
-            {
-                var email = Item as Outlook.MailItem;
-                if (email == null) return false;
-                if (email.Attachments.Count == 0) return false;
-                var maxSize = _cfg.GetEmailSize();
-                var size = email.Attachments.Cast<Outlook.Attachment>().Sum(_ => _.Size);
-                if (size <= maxSize) return false;
-                var msg = string.Format(Resources.OnSendEmailSizeChecker_Message, maxSize.ToStringWithSizeUnit());
-                return MessageBox.Show(msg, Resources.OnSendEmailSizeChecker_Caption, MessageBoxButton.YesNo) == MessageBoxResult.Yes;
-            });
+        private bool OnItemSend(object item)
+        {
+            var email = item as Outlook.MailItem;
+            if (email == null) return false;
+            if (email.Attachments.Count == 0) return false;
+            var maxSize = _cfg.GetEmailSize();
+            var size = email.Attachments.Cast<Outlook.Attachment>().Sum(_ => _.Size);
+            if (size <= maxSize) return false;
+            var msg = string.Format(Resources.OnSendEmailSizeChecker_Message, maxSize.ToStringWithSizeUnit());
+            return MessageBox.Show(msg, Resources.OnSendEmailSizeChecker_Caption, MessageBoxButton.YesNo) == MessageBoxResult.Yes;
+        }
     }
 }

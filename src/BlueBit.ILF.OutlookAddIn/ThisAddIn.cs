@@ -4,30 +4,48 @@ using BlueBit.ILF.OutlookAddIn.Diagnostics;
 using MoreLinq;
 using NLog;
 using System.Collections.Generic;
+using Microsoft.Office.Core;
 
 namespace BlueBit.ILF.OutlookAddIn
 {
     public partial class ThisAddIn
     {
-        private static Logger _logger = LogManager.GetCurrentClassLogger();
-        private IContainer _container;
+        private static readonly Logger _logger;
+        private static readonly IContainer _container;
 
-        private void InternalStartup()
+        static ThisAddIn()
+        {
+            _logger = LogManager.GetCurrentClassLogger();
+            _container = CreateContainer();
+        }
+
+        private static IContainer CreateContainer()
             => _logger.OnEntryCall(() =>
             {
-                throw new System.Exception("bla!");
-
                 var builder = new ContainerBuilder();
+                var assembly = typeof(ThisAddIn).Assembly;
                 builder
-                    .RegisterAssemblyTypes(typeof(IComponent).Assembly)
+                    .RegisterAssemblyTypes(assembly)
                     .AssignableTo<IComponent>()
                     .AsImplementedInterfaces()
                     .SingleInstance();
+                builder
+                    .RegisterAssemblyTypes(assembly)
+                    .AssignableTo<IRibbonExtensibility>()
+                    .AsImplementedInterfaces()
+                    .SingleInstance();
 
-                _container = builder.Build();
+                return builder.Build();
+            });
+
+        private void InternalStartup()
+            => _logger.OnEntryCall(() =>
                 _container
                     .Resolve<IEnumerable<ISelfRegisteredComponent>>()
-                    .ForEach(_ => _.Initialize(this.Application));
-            });
+                    .ForEach(_ => _.Initialize(this.Application))
+            );
+
+        protected override IRibbonExtensibility CreateRibbonExtensibilityObject()
+            => _logger.OnEntryCall(_container.Resolve<IRibbonExtensibility>);
     }
 }

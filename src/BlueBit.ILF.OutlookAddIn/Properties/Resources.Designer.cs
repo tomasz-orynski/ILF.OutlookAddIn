@@ -79,6 +79,15 @@ namespace BlueBit.ILF.OutlookAddIn.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Wybierz dodatkowe kalendarze....
+        /// </summary>
+        internal static string OnAddAppointmentHandler_Caption {
+            get {
+                return ResourceManager.GetString("OnAddAppointmentHandler_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Uwaga!.
         /// </summary>
         internal static string OnSendEmailSizeChecker_Caption {
@@ -98,6 +107,15 @@ namespace BlueBit.ILF.OutlookAddIn.Properties {
         internal static string OnSendEmailSizeChecker_Message {
             get {
                 return ResourceManager.GetString("OnSendEmailSizeChecker_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wybierz domyślne kalendarze....
+        /// </summary>
+        internal static string SetDefaultCalendars_Caption {
+            get {
+                return ResourceManager.GetString("SetDefaultCalendars_Caption", resourceCulture);
             }
         }
     }

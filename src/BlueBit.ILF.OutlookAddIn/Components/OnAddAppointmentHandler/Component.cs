@@ -1,7 +1,8 @@
 ﻿using BlueBit.ILF.OutlookAddIn.Common.Extensions;
-using BlueBit.ILF.OutlookAddIn.Diagnostics;
+using BlueBit.ILF.OutlookAddIn.Common.Utils;
 using BlueBit.ILF.OutlookAddIn.MVVM.Models;
 using BlueBit.ILF.OutlookAddIn.MVVM.Views;
+using BlueBit.ILF.OutlookAddIn.Properties;
 using MoreLinq;
 using NLog;
 using System.Linq;
@@ -25,53 +26,59 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnAddAppointmentHandler
                 .GetNamespace("MAPI")
                 .GetDefaultFolder(Outlook.OlDefaultFolders.olFolderCalendar)
                 .Items
-                .ItemAdd += HandlerExtensions.AsSingleItemAddEventHandler(items_ItemAdd);
+                .ItemAdd += HandlerExtensions.AsSingleItemAddEventHandler(OnItemAdd, _logger);
         }
 
-        private void items_ItemAdd(object item)
-            => _logger.OnEntryCall(() =>
+        private void OnItemAdd(object item)
+        {
+            var appointment = item as Outlook.AppointmentItem;
+            if (appointment == null) return;
+
+            if (appointment.ResponseStatus != Outlook.OlResponseStatus.olResponseAccepted) return;
+            var rootFolder = (Outlook.Folder)appointment.Parent;
+            if (!rootFolder.FolderPath.StartsWith(@"\\")) return;
+            var categories = appointment.Application.Session.Categories;
+
+            using (var foldersSource = new FoldersSource(
+                rootFolder,
+                _cfg.GetCalendarPrefixes().AsPrefixFilter(),
+                _cfg.GetDeafultCalendars().AsEqualsFilter()
+                ))
+            using (var categoriesSource = new CategoriesSource(categories))
             {
-                var appointment = item as Outlook.AppointmentItem;
-                if (appointment == null) return;
+                var window = new CalendarsAndCategoriesWindow();
+                window.DataContext = new CalendarsAndCategoriesModel(
+                    foldersSource.EnumFolders,
+                    categoriesSource.EnumCategories,
+                    FuncExtensions
+                        .ApplyParams<CalendarsAndCategoriesModel, Outlook.AppointmentItem>(OnApply, appointment)
+                        .IfTrueThenCloseWindow(window),
+                    FuncExtensions
+                        .AlwaysTrue<CalendarsAndCategoriesModel>()
+                        .IfTrueThenCloseWindow(window)
+                    );
+                window.Title = Resources.OnAddAppointmentHandler_Caption;
+                window.ShowDialog();
+            }
+        }
 
-                if (appointment.ResponseStatus != Outlook.OlResponseStatus.olResponseAccepted) return;
-                var rootFolder = (Outlook.Folder)appointment.Parent;
-                if (!rootFolder.FolderPath.StartsWith(@"\\")) return;
+        private bool OnApply(CalendarsAndCategoriesModel model, Outlook.AppointmentItem appointment)
+        {
+            var categories = string.Join(",", model.Categories.Select(_ => _.ID));
+            model.Calendars
+                .Where(_ => _.IsSelected)
+                .ForEach(_ => Clone(_.Folder, appointment, categories));
+            return true;
+        }
 
-                var prefixes = _cfg.GetCalendarPrefixes().ToList();
-                var selected = _cfg.GetDeafultCalendars().ToList();
-                using (var foldersSource = new FoldersSource(
-                    rootFolder,
-                    name => prefixes.Any(name.StartsWith),
-                    name => selected.Any(name.Equals)
-                    ))
-                {
-                    var window = new CalendarsWindow();
-                    window.DataContext = new CalendarsModel(
-                        foldersSource.EnumFolders,
-                        model => {
-                            model.Calendars
-                                .Where(_ => _.IsSelected)
-                                .ForEach(_ =>
-                                {
-                                    Clone(_.Folder, appointment);
-                                });
-                            window.Close();
-                        },
-                        model => {
-                            window.Close();
-                        });
-                    window.ShowDialog();
-                }
-            });
-
-        private static Outlook.AppointmentItem Clone(Outlook.Folder folder, Outlook.AppointmentItem source)
+        private static Outlook.AppointmentItem Clone(Outlook.Folder folder, Outlook.AppointmentItem source, string categories)
         {
             var item = (Outlook.AppointmentItem)folder.Items.Add(Outlook.OlItemType.olAppointmentItem);
             item.Delete();
-            item = source.Copy();
-            item = item.Move(folder);
+            item = (Outlook.AppointmentItem)source.Copy();
+            item = (Outlook.AppointmentItem)item.Move(folder);
             item.Subject = source.Application.Session.CurrentUser.Name;
+            item.Categories = categories;
             item.Save();
             return item;
         }

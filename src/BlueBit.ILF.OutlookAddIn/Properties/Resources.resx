@@ -123,6 +123,9 @@
   <data name="CmdCancel" xml:space="preserve">
     <value>Anuluj</value>
   </data>
+  <data name="OnAddAppointmentHandler_Caption" xml:space="preserve">
+    <value>Wybierz dodatkowe kalendarze...</value>
+  </data>
   <data name="OnSendEmailSizeChecker_Caption" xml:space="preserve">
     <value>Uwaga!</value>
   </data>
@@ -133,5 +136,8 @@
 - jeśli wiadomość ma charakter prywatny w temacie dopisz [PRIV], pozwoli to odpowiednio filtrować wiadomości.
 
 Czy chcesz przerwać wysyłanie?</value>
+  </data>
+  <data name="SetDefaultCalendars_Caption" xml:space="preserve">
+    <value>Wybierz domyślne kalendarze...</value>
   </data>
 </root>

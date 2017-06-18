@@ -1,20 +1,24 @@
 ﻿using Microsoft.Office.Interop.Outlook;
-using Microsoft.Office.Tools;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BlueBit.ILF.OutlookAddIn.Components
 {
-    interface IComponent
+    public interface IComponent
     {
-
     }
 
-    interface ISelfRegisteredComponent : IComponent
+    public interface ISelfRegisteredComponent : IComponent
     {
         void Initialize(Application app);
+    }
+
+    public enum CommandID : byte
+    {
+        SetDefaultCalendars = 1,
+    }
+
+    public interface ICommandComponent : IComponent
+    {
+        CommandID ID { get; }
+        void Execute();
     }
 }

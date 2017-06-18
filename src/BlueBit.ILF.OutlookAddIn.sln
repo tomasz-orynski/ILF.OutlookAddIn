@@ -5,12 +5,14 @@ VisualStudioVersion = 15.0.26430.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueBit.ILF.OutlookAddIn", "BlueBit.ILF.OutlookAddIn\BlueBit.ILF.OutlookAddIn.csproj", "{56C71EEC-0E9D-4986-A4BF-74726EC1181A}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "BlueBit.ILF.OutlookAddIn.Setup", "BlueBit.ILF.OutlookAddIn.Setup\BlueBit.ILF.OutlookAddIn.Setup.vdproj", "{A6EB1870-E0C5-4DA0-B55E-E0499F41129C}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{A6AFD728-7494-4CE3-9BBB-2111C9C60606}"
 	ProjectSection(SolutionItems) = preProject
 		..\doc\info.txt = ..\doc\info.txt
 	EndProjectSection
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "BlueBit.ILF.OutlookAddIn.Setup-x64", "BlueBit.ILF.OutlookAddIn.Setup-x64\BlueBit.ILF.OutlookAddIn.Setup-x64.vdproj", "{31DC5E04-B79A-42E9-85C6-8986A213737A}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "BlueBit.ILF.OutlookAddIn.Setup-x86", "BlueBit.ILF.OutlookAddIn.Setup-x86\BlueBit.ILF.OutlookAddIn.Setup-x86.vdproj", "{3C7A1365-B299-40AF-B73A-5F67C9FBAEB7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,8 +24,10 @@ Global
 		{56C71EEC-0E9D-4986-A4BF-74726EC1181A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{56C71EEC-0E9D-4986-A4BF-74726EC1181A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{56C71EEC-0E9D-4986-A4BF-74726EC1181A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A6EB1870-E0C5-4DA0-B55E-E0499F41129C}.Debug|Any CPU.ActiveCfg = Debug
-		{A6EB1870-E0C5-4DA0-B55E-E0499F41129C}.Release|Any CPU.ActiveCfg = Release
+		{31DC5E04-B79A-42E9-85C6-8986A213737A}.Debug|Any CPU.ActiveCfg = Debug
+		{31DC5E04-B79A-42E9-85C6-8986A213737A}.Release|Any CPU.ActiveCfg = Release
+		{3C7A1365-B299-40AF-B73A-5F67C9FBAEB7}.Debug|Any CPU.ActiveCfg = Debug
+		{3C7A1365-B299-40AF-B73A-5F67C9FBAEB7}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
