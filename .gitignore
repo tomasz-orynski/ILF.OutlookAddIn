@@ -1,3 +1,8 @@
 /src/BlueBit.ILF.OutlookAddIn/obj
 /src/BlueBit.ILF.OutlookAddIn/bin
 /src/.vs
+/src/BlueBit.ILF.OutlookAddIn.Setup-x64/Debug
+/src/BlueBit.ILF.OutlookAddIn.Setup-x64/Release
+/src/BlueBit.ILF.OutlookAddIn.Setup-x86/Debug
+/src/BlueBit.ILF.OutlookAddIn.Setup-x86/Release
+/out

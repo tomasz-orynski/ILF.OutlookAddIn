@@ -681,6 +681,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_B514100C8E6A404A96365AEC476954DE"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_B5204AE03654075B117D81CED63DE354"
         "OwnerKey" = "8:_CE085B09C5BC4CB087B6D6DB5E99CB3E"
         "MsmSig" = "8:_UNDEFINED"
@@ -791,6 +797,12 @@
         {
         "MsmKey" = "8:_CE7E86B53C17C070DA179C85DF097D06"
         "OwnerKey" = "8:_CE085B09C5BC4CB087B6D6DB5E99CB3E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D12ADE175DB74C13BA32469A931C7CCA"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -971,12 +983,6 @@
         {
         "MsmKey" = "8:_FBE503B09AF6E29D38AB0967ED5BE8CB"
         "OwnerKey" = "8:_CE085B09C5BC4CB087B6D6DB5E99CB3E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_A87F37AED859D0FC61582FF6348E107D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1573,6 +1579,12 @@
         "OwnerKey" = "8:_53D60A73745415A37A9D5C318231D261"
         "MsmSig" = "8:_UNDEFINED"
         }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_A87F37AED859D0FC61582FF6348E107D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
     }
     "Configurations"
     {
@@ -1581,7 +1593,7 @@
         "DisplayName" = "8:Debug"
         "IsDebugOnly" = "11:TRUE"
         "IsReleaseOnly" = "11:FALSE"
-        "OutputFilename" = "8:Debug\\BlueBit.ILF.OutlookAddIn.Setup-x86.msi"
+        "OutputFilename" = "8:..\\..\\out\\install\\BlueBit.ILF.OutlookAddIn.Setup-x86.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -1613,7 +1625,7 @@
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-        "OutputFilename" = "8:Release\\BlueBit.ILF.OutlookAddIn.Setup-x86.msi"
+        "OutputFilename" = "8:..\\..\\out\\install\\BlueBit.ILF.OutlookAddIn.Setup-x86.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -4179,6 +4191,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B514100C8E6A404A96365AEC476954DE"
+            {
+            "SourcePath" = "8:..\\..\\out\\bin\\BlueBit.ILF.OutlookAddIn.vsto"
+            "TargetName" = "8:BlueBit.ILF.OutlookAddIn.vsto"
+            "Tag" = "8:"
+            "Folder" = "8:_D54851EEEC1E44369C1451635508845F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_B5204AE03654075B117D81CED63DE354"
             {
             "AssemblyRegister" = "3:1"
@@ -4518,6 +4550,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D12ADE175DB74C13BA32469A931C7CCA"
+            {
+            "SourcePath" = "8:..\\..\\out\\bin\\BlueBit.ILF.OutlookAddIn.dll.manifest"
+            "TargetName" = "8:BlueBit.ILF.OutlookAddIn.dll.manifest"
+            "Tag" = "8:"
+            "Folder" = "8:_D54851EEEC1E44369C1451635508845F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_D24BEC62648299B78C7C2DCE067A3F92"
@@ -5020,7 +5072,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:ILF.OutlookAddIn"
         "ProductCode" = "8:{C942035D-BA60-414E-A77E-E3939D17E7AE}"
-        "PackageCode" = "8:{D7BD69D6-0A33-4D2B-B202-8B55C6711F98}"
+        "PackageCode" = "8:{8075D2E2-CACB-47D0-9751-2964C8ECBBA3}"
         "UpgradeCode" = "8:{88DE47E8-161A-4846-9837-D80884D0C9B1}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -5061,15 +5113,103 @@
                     "Transitive" = "11:FALSE"
                         "Keys"
                         {
-                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_1CCD565260AF41FB857824ED11D5431A"
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_DBF36014934B4B129A737E1BF61EF547"
                             {
-                            "Name" = "8:[Manufacturer]"
+                            "Name" = "8:Microsoft"
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:FALSE"
                             "DeleteAtUninstall" = "11:FALSE"
                             "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_701D6941C6DA41EE9142823959DBF91F"
+                                    {
+                                    "Name" = "8:Office"
+                                    "Condition" = "8:"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "DeleteAtUninstall" = "11:FALSE"
+                                    "Transitive" = "11:FALSE"
+                                        "Keys"
+                                        {
+                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_9C66BCE065784F4DAA0CC65DF4A083D8"
+                                            {
+                                            "Name" = "8:Outlook"
+                                            "Condition" = "8:"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "DeleteAtUninstall" = "11:FALSE"
+                                            "Transitive" = "11:FALSE"
+                                                "Keys"
+                                                {
+                                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_C4ED5D5B128B4DBB97EDA0204F8D06F5"
+                                                    {
+                                                    "Name" = "8:Addins"
+                                                    "Condition" = "8:"
+                                                    "AlwaysCreate" = "11:FALSE"
+                                                    "DeleteAtUninstall" = "11:FALSE"
+                                                    "Transitive" = "11:FALSE"
+                                                        "Keys"
+                                                        {
+                                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_80E5327BF0E740588D6E61D60E72E822"
+                                                            {
+                                                            "Name" = "8:BlueBit.ILF.OutlookAddIn"
+                                                            "Condition" = "8:"
+                                                            "AlwaysCreate" = "11:FALSE"
+                                                            "DeleteAtUninstall" = "11:FALSE"
+                                                            "Transitive" = "11:FALSE"
+                                                                "Keys"
+                                                                {
+                                                                }
+                                                                "Values"
+                                                                {
+                                                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_982F83B3DD4B47DE997B7E24AF2A1315"
+                                                                    {
+                                                                    "Name" = "8:LoadBehavior"
+                                                                    "Condition" = "8:"
+                                                                    "Transitive" = "11:FALSE"
+                                                                    "ValueTypes" = "3:3"
+                                                                    "Value" = "3:3"
+                                                                    }
+                                                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_CE17758804D049EEB604B2636918C023"
+                                                                    {
+                                                                    "Name" = "8:Manifest"
+                                                                    "Condition" = "8:"
+                                                                    "Transitive" = "11:FALSE"
+                                                                    "ValueTypes" = "3:1"
+                                                                    "Value" = "8:file:///[TARGETDIR]BlueBit.ILF.OutlookAddIn.vsto|vstolocal"
+                                                                    }
+                                                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_D24A96226B424390965E66496ECDA39A"
+                                                                    {
+                                                                    "Name" = "8:FriendlyName"
+                                                                    "Condition" = "8:"
+                                                                    "Transitive" = "11:FALSE"
+                                                                    "ValueTypes" = "3:1"
+                                                                    "Value" = "8:BlueBit.ILF.OutlookAddIn"
+                                                                    }
+                                                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_FBE37732655A4CEEAAE7A1B741FD0A90"
+                                                                    {
+                                                                    "Name" = "8:Description"
+                                                                    "Condition" = "8:"
+                                                                    "Transitive" = "11:FALSE"
+                                                                    "ValueTypes" = "3:1"
+                                                                    "Value" = "8:BlueBit.ILF.OutlookAddIn"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        "Values"
+                                                        {
+                                                        }
+                                                    }
+                                                }
+                                                "Values"
+                                                {
+                                                }
+                                            }
+                                        }
+                                        "Values"
+                                        {
+                                        }
+                                    }
                                 }
                                 "Values"
                                 {
@@ -5385,7 +5525,7 @@
                             "ContextData" = "8:1;True=1;False=0"
                             "Attributes" = "3:0"
                             "Setting" = "3:0"
-                            "Value" = "3:1"
+                            "Value" = "3:0"
                             "DefaultValue" = "3:1"
                             "UsePlugInResources" = "11:TRUE"
                             }
