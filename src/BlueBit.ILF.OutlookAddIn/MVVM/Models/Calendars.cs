@@ -10,8 +10,8 @@ namespace BlueBit.ILF.OutlookAddIn.MVVM.Models
 {
     public class CalendarModel : ObservableObject
     {
-        private readonly Outlook.Folder _folder;
-        public Outlook.Folder Folder => _folder;
+        private readonly Outlook.NavigationFolder _folder;
+        public Outlook.NavigationFolder Folder => _folder;
 
 
         private bool _isSelected;
@@ -21,9 +21,9 @@ namespace BlueBit.ILF.OutlookAddIn.MVVM.Models
             set => Set(() => IsSelected, ref _isSelected, value);
         }
 
-        public string Name => _folder.Name;
+        public string Name => _folder.DisplayName;
 
-        public CalendarModel(Outlook.Folder folder)
+        public CalendarModel(Outlook.NavigationFolder folder)
         {
             Contract.Assert(folder != null);
             _folder = folder;
@@ -42,14 +42,13 @@ namespace BlueBit.ILF.OutlookAddIn.MVVM.Models
 
 
         public CalendarsModel(
-            Action<Action<Outlook.Folder,bool>> foldersEnumerator,
+            Action<Action<Outlook.NavigationFolder,bool>> foldersEnumerator,
             Action<CalendarsModel> cmdApply,
             Action<CalendarsModel> cmdCancel)
         {
             Contract.Assert(foldersEnumerator != null);
             Contract.Assert(cmdApply != null);
             Contract.Assert(cmdCancel != null);
-
 
             _actions.Add(new ActionModel()
             {

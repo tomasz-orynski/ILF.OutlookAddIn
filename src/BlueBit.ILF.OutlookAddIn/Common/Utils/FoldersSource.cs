@@ -12,7 +12,7 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Utils
             IDisposable
     {
         private readonly Outlook.Application _application;
-        private readonly IEnumerable<Tuple<Outlook.Folder, bool>> _foldersSource;
+        private readonly IEnumerable<Tuple<Outlook.NavigationFolder, bool>> _foldersSource;
         private readonly IEnumerable<Action> _onDisposeActions;
 
         public FoldersSource(
@@ -40,12 +40,12 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Utils
                 .SelectMany(_ => _.NavigationFolders.Cast<Outlook.NavigationFolder>())
                 .DebugFetch()
                 .Where(_ => _.Folder.FolderPath != rootFolder.FolderPath)
-                .Select(_ => new { Folder = _.Folder.As<Outlook.Folder>(), _.DisplayName })
+                .Select(_ => new { NavigationFolder = _, Folder = _.Folder.As<Outlook.Folder>(), _.DisplayName })
                 .DebugFetch()
                 .Where(_ => folderFilter(_.DisplayName))
                 .Where(_ => CheckFolder(_.Folder))
                 .OrderBy(_ => _.DisplayName)
-                .Select(_ => Tuple.Create(_.Folder, folderSelected(_.DisplayName)))
+                .Select(_ => Tuple.Create(_.NavigationFolder, folderSelected(_.DisplayName)))
                 .DebugFetch()
                 ;
         }
@@ -55,7 +55,7 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Utils
             _onDisposeActions.ForEach(_ => _.Invoke());
         }
 
-        public void EnumFolders(Action<Outlook.Folder, bool> enumAction)
+        public void EnumFolders(Action<Outlook.NavigationFolder, bool> enumAction)
         {
             Contract.Assert(enumAction != null);
             _foldersSource

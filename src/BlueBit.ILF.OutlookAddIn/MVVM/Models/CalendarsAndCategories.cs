@@ -45,7 +45,7 @@ namespace BlueBit.ILF.OutlookAddIn.MVVM.Models
 
 
         public CalendarsAndCategoriesModel(
-            Action<Action<Outlook.Folder, bool>> foldersEnumerator,
+            Action<Action<Outlook.NavigationFolder, bool>> foldersEnumerator,
             Action<Action<Outlook.Category>> categoriesEnumerator,
             Action<CalendarsAndCategoriesModel> cmdApply,
             Action<CalendarsAndCategoriesModel> cmdCancel)
