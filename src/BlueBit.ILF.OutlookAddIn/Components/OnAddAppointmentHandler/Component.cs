@@ -1,5 +1,6 @@
 ﻿using BlueBit.ILF.OutlookAddIn.Common.Extensions;
 using BlueBit.ILF.OutlookAddIn.Common.Utils;
+using BlueBit.ILF.OutlookAddIn.Diagnostics;
 using BlueBit.ILF.OutlookAddIn.MVVM.Models;
 using BlueBit.ILF.OutlookAddIn.MVVM.Views;
 using BlueBit.ILF.OutlookAddIn.Properties;
@@ -13,7 +14,8 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnAddAppointmentHandler
     public class Component : ISelfRegisteredComponent
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
-        private IConfiguration _cfg;
+        private readonly IConfiguration _cfg;
+        private Outlook.Items _items;
 
         public Component(IConfiguration cfg)
         {
@@ -22,45 +24,46 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnAddAppointmentHandler
 
         public void Initialize(Outlook.Application app)
         {
-            app
+            _items = app
                 .GetNamespace("MAPI")
                 .GetDefaultFolder(Outlook.OlDefaultFolders.olFolderCalendar)
-                .Items
-                .ItemAdd += HandlerExtensions.AsSingleItemAddEventHandler(OnItemAdd, _logger);
+                .Items;
+            _items.ItemAdd += OnItemAdd;
         }
 
         private void OnItemAdd(object item)
-        {
-            var appointment = item as Outlook.AppointmentItem;
-            if (appointment == null) return;
-
-            if (appointment.ResponseStatus != Outlook.OlResponseStatus.olResponseAccepted) return;
-            var rootFolder = (Outlook.Folder)appointment.Parent;
-            if (!rootFolder.FolderPath.StartsWith(@"\\")) return;
-            var categories = appointment.Application.Session.Categories;
-
-            using (var foldersSource = new FoldersSource(
-                rootFolder,
-                _cfg.GetCalendarPrefixes().AsPrefixFilter(),
-                _cfg.GetDeafultCalendars().AsEqualsFilter()
-                ))
-            using (var categoriesSource = new CategoriesSource(categories))
+            => _logger.OnEntryCall(HandlerExtensions.AsSingleEventHandler(() =>
             {
-                var window = new CalendarsAndCategoriesWindow();
-                window.DataContext = new CalendarsAndCategoriesModel(
-                    foldersSource.EnumFolders,
-                    categoriesSource.EnumCategories,
-                    FuncExtensions
-                        .ApplyParams<CalendarsAndCategoriesModel, Outlook.AppointmentItem>(OnApply, appointment)
-                        .IfTrueThenCloseWindow(window),
-                    FuncExtensions
-                        .AlwaysTrue<CalendarsAndCategoriesModel>()
-                        .IfTrueThenCloseWindow(window)
-                    );
-                window.Title = Resources.OnAddAppointmentHandler_Caption;
-                window.ShowDialog();
-            }
-        }
+                var appointment = item as Outlook.AppointmentItem;
+                if (appointment == null) return;
+
+                if (appointment.ResponseStatus != Outlook.OlResponseStatus.olResponseAccepted) return;
+                var rootFolder = (Outlook.Folder)appointment.Parent;
+                if (!rootFolder.FolderPath.StartsWith(@"\\")) return;
+                var categories = appointment.Application.Session.Categories;
+
+                using (var foldersSource = new FoldersSource(
+                    rootFolder,
+                    _cfg.GetCalendarPrefixes().AsPrefixFilter(),
+                    _cfg.GetDeafultCalendars().AsEqualsFilter()
+                    ))
+                using (var categoriesSource = new CategoriesSource(categories))
+                {
+                    var window = new CalendarsAndCategoriesWindow();
+                    window.DataContext = new CalendarsAndCategoriesModel(
+                        foldersSource.EnumFolders,
+                        categoriesSource.EnumCategories,
+                        FuncExtensions
+                            .ApplyParams<CalendarsAndCategoriesModel, Outlook.AppointmentItem>(OnApply, appointment)
+                            .IfTrueThenCloseWindow(window),
+                        FuncExtensions
+                            .AlwaysTrue<CalendarsAndCategoriesModel>()
+                            .IfTrueThenCloseWindow(window)
+                        );
+                    window.Title = Resources.OnAddAppointmentHandler_Caption;
+                    window.ShowDialog();
+                }
+            }));
 
         private bool OnApply(CalendarsAndCategoriesModel model, Outlook.AppointmentItem appointment)
         {

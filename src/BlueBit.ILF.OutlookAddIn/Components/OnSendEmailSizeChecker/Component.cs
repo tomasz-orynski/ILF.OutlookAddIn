@@ -11,7 +11,8 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnSendEmailSizeChecker
     public class Component : ISelfRegisteredComponent
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
-        private IConfiguration _cfg;
+        private readonly IConfiguration _cfg;
+        private Outlook.Application _app;
 
         public Component(IConfiguration cfg)
         {
@@ -20,19 +21,22 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnSendEmailSizeChecker
 
         public void Initialize(Outlook.Application app)
         {
-            app.ItemSend += HandlerExtensions.AsItemSendHandler(OnItemSend, _logger);
+            _app = app;
+            _app.ItemSend += OnItemSend;
         }
 
-        private bool OnItemSend(object item)
-        {
-            var email = item as Outlook.MailItem;
-            if (email == null) return false;
-            if (email.Attachments.Count == 0) return false;
-            var maxSize = _cfg.GetEmailSize();
-            var size = email.Attachments.Cast<Outlook.Attachment>().Sum(_ => _.Size);
-            if (size <= maxSize) return false;
-            var msg = string.Format(Resources.OnSendEmailSizeChecker_Message, maxSize.ToStringWithSizeUnit());
-            return MessageBox.Show(msg, Resources.OnSendEmailSizeChecker_Caption, MessageBoxButton.YesNo) == MessageBoxResult.Yes;
-        }
+        private void OnItemSend(object item, ref bool cancel)
+            => _logger.OnEntryCall(() =>
+            {
+                var email = item as Outlook.MailItem;
+                if (email == null) return false;
+                if (email.Attachments.Count == 0) return false;
+                var maxSize = _cfg.GetEmailSize();
+                if (maxSize < 0) return false;
+                var size = email.Attachments.Cast<Outlook.Attachment>().Sum(_ => _.Size);
+                if (size <= maxSize) return false;
+                var msg = string.Format(Resources.OnSendEmailSizeChecker_Message, maxSize.ToStringWithSizeUnit());
+                return MessageBox.Show(msg, Resources.OnSendEmailSizeChecker_Caption, MessageBoxButton.YesNo) == MessageBoxResult.Yes;
+            });
     }
 }

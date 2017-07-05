@@ -13,7 +13,7 @@ namespace BlueBit.ILF.OutlookAddIn.Components.SetDefaultCalendars
         ISelfRegisteredComponent,
         ICommandComponent
     {
-        private IConfiguration _cfg;
+        private readonly IConfiguration _cfg;
         private Func<Outlook.Folder> _getRootFolder;
 
         public Component(IConfiguration cfg)

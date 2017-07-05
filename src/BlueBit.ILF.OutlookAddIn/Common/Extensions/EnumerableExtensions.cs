@@ -10,24 +10,28 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Extensions
         public static Func<string, bool> AsPrefixFilter(this IEnumerable<string> @this)
         {
             Contract.Assert(@this != null);
-            return input =>
-            {
-                input = input.ToLower();
-                return @this
-                    .Select(_ => _.ToLower())
-                    .Any(input.StartsWith);
-            };
+            if (@this.Any())
+                return input =>
+                {
+                    input = input.ToLower();
+                    return @this
+                        .Select(_ => _.ToLower())
+                        .Any(input.StartsWith);
+                };
+            return input => true;
         }
         public static Func<string, bool> AsEqualsFilter(this IEnumerable<string> @this)
         {
             Contract.Assert(@this != null);
-            return input =>
-            {
-                input = input.ToLower();
-                return @this
-                    .Select(_ => _.ToLower())
-                    .Any(input.Equals);
-            };
+            if (@this.Any())
+                return input =>
+                {
+                    input = input.ToLower();
+                    return @this
+                        .Select(_ => _.ToLower())
+                        .Any(input.Equals);
+                };
+            return input => true;
         }
 
         public static IEnumerable<T> DebugFetch<T>(this IEnumerable<T> @this)
