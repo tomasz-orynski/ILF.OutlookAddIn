@@ -29,5 +29,12 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Extensions
                     .Any(input.Equals);
             };
         }
+
+        public static IEnumerable<T> DebugFetch<T>(this IEnumerable<T> @this)
+#if DEBUG
+            => @this.ToList();
+#else
+            => @this;
+#endif
     }
 }

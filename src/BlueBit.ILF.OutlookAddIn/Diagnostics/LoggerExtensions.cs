@@ -1,7 +1,9 @@
-﻿using NLog;
+﻿using BlueBit.ILF.OutlookAddIn.Properties;
+using NLog;
 using System;
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
+using System.Windows;
 
 namespace BlueBit.ILF.OutlookAddIn.Diagnostics
 {
@@ -18,6 +20,7 @@ namespace BlueBit.ILF.OutlookAddIn.Diagnostics
             catch (Exception e)
             {
                 logger.Error(e, "!!" + name);
+                MessageBox.Show(e.Message, Resources.Exception_Caption, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
         public static void EntryCall(Logger logger, Action action) => EntryCall(logger, action, action.Method.Name);

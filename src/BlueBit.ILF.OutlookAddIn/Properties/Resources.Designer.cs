@@ -79,6 +79,15 @@ namespace BlueBit.ILF.OutlookAddIn.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Wystąpił błąd....
+        /// </summary>
+        internal static string Exception_Caption {
+            get {
+                return ResourceManager.GetString("Exception_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Wybierz dodatkowe kalendarze....
         /// </summary>
         internal static string OnAddAppointmentHandler_Caption {

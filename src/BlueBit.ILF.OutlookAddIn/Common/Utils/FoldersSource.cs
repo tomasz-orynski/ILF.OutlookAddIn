@@ -36,13 +36,18 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Utils
                 .As<Outlook.CalendarModule>()
                 .NavigationGroups
                 .Cast<Outlook.NavigationGroup>()
+                .DebugFetch()
                 .SelectMany(_ => _.NavigationFolders.Cast<Outlook.NavigationFolder>())
+                .DebugFetch()
                 .Where(_ => _.Folder.FolderPath != rootFolder.FolderPath)
                 .Select(_ => new { Folder = _.Folder.As<Outlook.Folder>(), _.DisplayName })
+                .DebugFetch()
                 .Where(_ => folderFilter(_.DisplayName))
                 .Where(_ => CheckFolder(_.Folder))
                 .OrderBy(_ => _.DisplayName)
-                .Select(_ => Tuple.Create(_.Folder, folderSelected(_.DisplayName)));
+                .Select(_ => Tuple.Create(_.Folder, folderSelected(_.DisplayName)))
+                .DebugFetch()
+                ;
         }
 
         public void Dispose()
