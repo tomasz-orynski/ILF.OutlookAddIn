@@ -32,7 +32,13 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Extensions
 
         public static IEnumerable<T> DebugFetch<T>(this IEnumerable<T> @this)
 #if DEBUG
-            => @this.ToList();
+        {
+            try { return @this.ToList(); }
+            catch {
+                Contract.Assert(false);
+                throw;
+            }
+        }
 #else
             => @this;
 #endif
