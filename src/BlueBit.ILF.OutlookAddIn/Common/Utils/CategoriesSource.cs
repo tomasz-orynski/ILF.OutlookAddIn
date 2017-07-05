@@ -11,7 +11,6 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Utils
     class CategoriesSource :
             IDisposable
     {
-        private readonly Outlook.Application _application;
         private readonly IEnumerable<Outlook.Category> _categoriesSource;
         private readonly IEnumerable<Action> _onDisposeActions;
 
@@ -26,7 +25,7 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Utils
 
             _categoriesSource = categories
                 .Cast<Outlook.Category>()
-                .DebugFetch()
+                .DebugFetch("A")
                 .OrderBy(_=>_.Name);
         }
 
