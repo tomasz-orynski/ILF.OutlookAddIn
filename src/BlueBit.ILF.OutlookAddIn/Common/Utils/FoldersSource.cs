@@ -1,7 +1,10 @@
 ﻿using BlueBit.ILF.OutlookAddIn.Common.Extensions;
+using BlueBit.ILF.OutlookAddIn.Diagnostics;
 using MoreLinq;
+using NLog;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using Outlook = Microsoft.Office.Interop.Outlook;
@@ -11,6 +14,7 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Utils
     class FoldersSource :
             IDisposable
     {
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly Outlook.Application _application;
         private readonly IEnumerable<Tuple<Outlook.NavigationFolder, bool>> _foldersSource;
         private readonly IEnumerable<Action> _onDisposeActions;
@@ -36,17 +40,13 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Utils
                 .As<Outlook.CalendarModule>()
                 .NavigationGroups
                 .Cast<Outlook.NavigationGroup>()
-                .DebugFetch("A")
                 .SelectMany(_ => _.NavigationFolders.Cast<Outlook.NavigationFolder>())
-                .DebugFetch("B")
-                .Where(_ => folderFilter(_.DisplayName))
-                .DebugFetch("C")
-                .Where(_ => _.Folder.FolderPath != rootFolder.FolderPath)
-                .DebugFetch("D")
-                .Where(_ => CheckFolder(_.Folder.As<Outlook.Folder>()))
+                .SafeWhere(_ => folderFilter(_.DisplayName))
+                .SafeWhere(_ => _.Folder.FolderPath != rootFolder.FolderPath)
+                .SafeWhere(_ => CheckFolder(_.Folder.As<Outlook.Folder>()))
                 .OrderBy(_ => _.DisplayName)
                 .Select(_ => Tuple.Create(_, folderSelected(_.DisplayName)))
-                .DebugFetch("E")
+                .SafeToList()
                 ;
         }
 
@@ -73,21 +73,20 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Utils
 
         static bool CheckFolder(Outlook.Folder folder)
         {
-            //TODO-TO
-#if DEBUG
-            return true;
-#else
             try
             {
                 var item = (Outlook.AppointmentItem)folder.Items.Add(Outlook.OlItemType.olAppointmentItem);
                 item.Delete();
                 return true;
             }
-            catch
+            catch(Exception e)
             {
+                var msg = $"{nameof(CheckFolder)}({folder.Name})";
+                _logger.Warn(e, msg);
+                if (Debugger.IsAttached)
+                    Debugger.Break();
             }
             return false;
-#endif
         }
     }
 }

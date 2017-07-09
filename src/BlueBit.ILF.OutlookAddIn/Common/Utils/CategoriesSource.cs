@@ -1,4 +1,4 @@
-﻿using BlueBit.ILF.OutlookAddIn.Common.Extensions;
+﻿using BlueBit.ILF.OutlookAddIn.Diagnostics;
 using MoreLinq;
 using System;
 using System.Collections.Generic;
@@ -25,7 +25,7 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Utils
 
             _categoriesSource = categories
                 .Cast<Outlook.Category>()
-                .DebugFetch("A")
+                .SafeToList()
                 .OrderBy(_=>_.Name);
         }
 

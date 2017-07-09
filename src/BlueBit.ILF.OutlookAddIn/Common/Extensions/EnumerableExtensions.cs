@@ -33,18 +33,5 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Extensions
                 };
             return input => true;
         }
-
-        public static IEnumerable<T> DebugFetch<T>(this IEnumerable<T> @this, string info)
-#if DEBUG
-        {
-            try { return @this.ToList(); }
-            catch (Exception e) {
-                Contract.Assert(false);
-                throw new Exception($"Fetch:{info}", e);
-            }
-        }
-#else
-            => @this;
-#endif
     }
 }
