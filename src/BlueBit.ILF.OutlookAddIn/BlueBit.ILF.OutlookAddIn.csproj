@@ -293,6 +293,7 @@
     <Compile Include="Components\OnAddAppointmentHandler\Configuration.cs" />
     <Compile Include="Components\OnSendEmailSizeChecker\Component.cs" />
     <Compile Include="Components\OnSendEmailSizeChecker\Configuration.cs" />
+    <Compile Include="Components\OnStartInit\Component.cs" />
     <Compile Include="Components\SetDefaultCalendars\Component.cs" />
     <Compile Include="Components\SetDefaultCalendars\Configuration.cs" />
     <Compile Include="Diagnostics\EnumerableExtensions.cs" />
