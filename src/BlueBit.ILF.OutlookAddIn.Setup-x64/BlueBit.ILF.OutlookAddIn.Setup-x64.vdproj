@@ -1558,19 +1558,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_C808235EEA75E644A199C719FABEEA47"
+        "OwnerKey" = "8:_C4BE7F7FA999437785290E3F211F9E29"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_F59BDF4B644040B1BD297306AAA7EC22"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_C4BE7F7FA999437785290E3F211F9E29"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -2159,6 +2153,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_C9F7D0F76EC3BAAA7856E8686126641F"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_C808235EEA75E644A199C719FABEEA47"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -5642,7 +5642,7 @@
         "UpgradeCode" = "8:{BFDCF411-B0FC-49C0-AD4E-CD054F9DD73C}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
-        "RemovePreviousVersions" = "11:FALSE"
+        "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
         "ProductVersion" = "8:1.0.0"
@@ -5650,10 +5650,10 @@
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
         "Title" = "8:BlueBit ILF.OutlookAddIn"
-        "Subject" = "8:"
+        "Subject" = "8:BlueBit ILF.OutlookAddIn"
         "ARPCONTACT" = "8:BlueBit"
-        "Keywords" = "8:"
-        "ARPCOMMENTS" = "8:"
+        "Keywords" = "8:BlueBit ILF OutlookAddIn"
+        "ARPCOMMENTS" = "8:BlueBit ILF.OutlookAddIn"
         "ARPURLINFOABOUT" = "8:"
         "ARPPRODUCTICON" = "8:"
         "ARPIconIndex" = "3:0"
