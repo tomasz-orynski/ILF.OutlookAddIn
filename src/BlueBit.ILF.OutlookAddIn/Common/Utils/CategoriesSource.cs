@@ -15,16 +15,17 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Utils
         private readonly IEnumerable<Action> _onDisposeActions;
 
         public CategoriesSource(
-            Outlook.Categories categories
+            FoldersSource foldersSource
             )
         {
-            Contract.Assert(categories != null);
+            Contract.Assert(foldersSource != null);
 
             var onDisposeActions = new List<Action>();
             _onDisposeActions = onDisposeActions;
 
-            _categoriesSource = categories
-                .Cast<Outlook.Category>()
+            _categoriesSource = foldersSource
+                .GetFolders()
+                .SelectMany(GetCategories)
                 .SafeToList()
                 .OrderBy(_=>_.Name);
         }
@@ -39,6 +40,13 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Utils
             Contract.Assert(enumAction != null);
             _categoriesSource
                 .ForEach(enumAction);
+        }
+
+        private IEnumerable<Outlook.Category> GetCategories(Outlook.Folder folder)
+        {
+            var storage = folder.GetStorage("http://schemas.microsoft.com/mapi/proptag/0x7C080102", Outlook.OlStorageIdentifierType.olIdentifyByMessageClass);
+            var xml = storage.PropertyAccessor.GetProperty("PR_ROAMING_XMLSTREAM");
+            return null;
         }
     }
 }

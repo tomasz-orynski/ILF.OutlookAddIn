@@ -61,6 +61,10 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Utils
             _foldersSource
                 .ForEach(_ => enumAction(_.Item1, _.Item2));
         }
+
+        public IEnumerable<Outlook.Folder> GetFolders()
+            => _foldersSource.Select(_ => _.Item1.Folder.As<Outlook.Folder>());
+
         private Outlook.Explorer GetExplorer(Outlook.Folder folder)
             => _application.Explorers.Cast<Outlook.Explorer>().FirstOrDefault(_ => _.CurrentFolder.FolderPath == folder.FolderPath);
 
