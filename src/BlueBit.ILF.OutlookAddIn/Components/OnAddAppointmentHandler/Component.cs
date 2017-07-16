@@ -40,7 +40,6 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnAddAppointmentHandler
                 if (appointment.ResponseStatus != Outlook.OlResponseStatus.olResponseAccepted) return;
                 var rootFolder = (Outlook.Folder)appointment.Parent;
                 if (!rootFolder.FolderPath.StartsWith(@"\\")) return;
-                var categories = appointment.Application.Session.Categories;
 
                 using (var foldersSource = new FoldersSource(
                     rootFolder,

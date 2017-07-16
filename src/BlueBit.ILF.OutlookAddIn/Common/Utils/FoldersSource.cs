@@ -87,10 +87,12 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Utils
             {
                 var msg = $"{nameof(CheckFolder)}({folder.Name})";
                 _logger.Warn(e, msg);
+                /*
                 if (Debugger.IsAttached)
                     Debugger.Break();
+                */
             }
-            return false;
+            return true;
         }
     }
 }
