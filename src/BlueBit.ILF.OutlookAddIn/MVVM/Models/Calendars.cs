@@ -8,28 +8,6 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace BlueBit.ILF.OutlookAddIn.MVVM.Models
 {
-    public class CalendarModel : ObservableObject
-    {
-        private readonly Outlook.NavigationFolder _folder;
-        public Outlook.NavigationFolder Folder => _folder;
-
-
-        private bool _isSelected;
-        public bool IsSelected
-        {
-            get => _isSelected;
-            set => Set(() => IsSelected, ref _isSelected, value);
-        }
-
-        public string Name => _folder.DisplayName;
-
-        public CalendarModel(Outlook.NavigationFolder folder)
-        {
-            Contract.Assert(folder != null);
-            _folder = folder;
-        }
-    }
-
     public class CalendarsModel : 
         ObservableObject
     {

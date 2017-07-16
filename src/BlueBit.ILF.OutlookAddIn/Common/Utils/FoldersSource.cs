@@ -44,7 +44,6 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Utils
                 .SafeWhere(_ => folderFilter(_.DisplayName))
                 .SafeWhere(_ => _.Folder.FolderPath != rootFolder.FolderPath)
                 .SafeWhere(_ => CheckFolder(_.Folder.As<Outlook.Folder>()))
-                .OrderBy(_ => _.DisplayName)
                 .Select(_ => Tuple.Create(_, folderSelected(_.DisplayName)))
                 .SafeToList()
                 ;
@@ -87,10 +86,7 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Utils
             {
                 var msg = $"{nameof(CheckFolder)}({folder.Name})";
                 _logger.Warn(e, msg);
-                /*
-                if (Debugger.IsAttached)
-                    Debugger.Break();
-                */
+                DebuggerExt.BreakIfAttached();
             }
             return true;
         }

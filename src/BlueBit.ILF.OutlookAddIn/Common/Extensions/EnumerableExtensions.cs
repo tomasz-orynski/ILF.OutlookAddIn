@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MoreLinq;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
@@ -33,5 +34,8 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Extensions
                 };
             return input => true;
         }
+
+        public static void ForEachFunc<T, TResult>(this IEnumerable<T> @this, Func<T, TResult> action)
+            => @this.ForEach(_ => action(_));
     }
 }

@@ -4,18 +4,26 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
     xmlns:local="clr-namespace:BlueBit.ILF.OutlookAddIn.MVVM.Views"
     mc:Ignorable="d" 
     Height="300" Width="300"
     Margin="5" ShowInTaskbar="False" WindowStartupLocation="CenterOwner" WindowStyle="ToolWindow"
     >
+    <Window.Resources>
+        <CollectionViewSource x:Key="CalendarsSource" Source="{Binding Calendars}">
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="Name"/>
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition Height="35"/>
         </Grid.RowDefinitions>
 
-        <ListBox ItemsSource="{Binding Calendars}" Grid.Row="0" Grid.Column="0" SelectionMode="Multiple">
+        <ListBox ItemsSource="{Binding Source={StaticResource CalendarsSource}}" Grid.Row="0" Grid.Column="0" SelectionMode="Multiple">
             <ListBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}">
                     <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=OneWay}"/>

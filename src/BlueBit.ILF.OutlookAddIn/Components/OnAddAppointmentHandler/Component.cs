@@ -46,12 +46,10 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnAddAppointmentHandler
                     _cfg.GetCalendarPrefixes().AsPrefixFilter(),
                     _cfg.GetDeafultCalendars().AsEqualsFilter()
                     ))
-                using (var categoriesSource = new CategoriesSource(foldersSource))
                 {
                     var window = new CalendarsAndCategoriesWindow();
                     window.DataContext = new CalendarsAndCategoriesModel(
                         foldersSource.EnumFolders,
-                        categoriesSource.EnumCategories,
                         FuncExtensions
                             .ApplyParams<CalendarsAndCategoriesModel, Outlook.AppointmentItem>(OnApply, appointment)
                             .IfTrueThenCloseWindow(window),

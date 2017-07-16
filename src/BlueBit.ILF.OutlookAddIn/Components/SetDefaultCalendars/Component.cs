@@ -38,12 +38,10 @@ namespace BlueBit.ILF.OutlookAddIn.Components.SetDefaultCalendars
                     _cfg.GetCalendarPrefixes().AsPrefixFilter(),
                     _cfg.GetDeafultCalendars().AsEqualsFilter()
                     ))
-                using (var categoriesSource = new CategoriesSource(foldersSource))
                 {
                     var window = new CalendarsAndCategoriesWindow();
                     window.DataContext = new CalendarsAndCategoriesModel(
                         foldersSource.EnumFolders,
-                        categoriesSource.EnumCategories,
                         FuncExtensions
                             .AlwaysTrue<CalendarsAndCategoriesModel>()
                             .IfTrueThenCloseWindow(window),

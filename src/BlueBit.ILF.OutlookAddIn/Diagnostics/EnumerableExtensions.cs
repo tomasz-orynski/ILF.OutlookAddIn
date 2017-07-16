@@ -18,10 +18,7 @@ namespace BlueBit.ILF.OutlookAddIn.Diagnostics
             {
                 var msg = $"{nameof(SafeToList)}<{typeof(T).Name}>";
                 _logger.Warn(e, msg);
-                /*
-                if (Debugger.IsAttached)
-                    Debugger.Break();
-                */
+                DebuggerExt.BreakIfAttached();
             }
             return new List<T>();
         }
@@ -36,10 +33,7 @@ namespace BlueBit.ILF.OutlookAddIn.Diagnostics
                 {
                     var msg = $"{nameof(SafeWhere)}<{typeof(T).Name}>";
                     _logger.Warn(e, msg);
-                    /*
-                    if (Debugger.IsAttached)
-                        Debugger.Break();
-                    */
+                    DebuggerExt.BreakIfAttached();
                 }
                 return false;
             });

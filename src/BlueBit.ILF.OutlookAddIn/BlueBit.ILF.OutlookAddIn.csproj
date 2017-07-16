@@ -183,8 +183,8 @@
     <Compile Include="Common\Extensions\FuncExtensions.cs" />
     <Compile Include="Common\Extensions\HandlerExtensions.cs" />
     <Compile Include="Common\Extensions\ObjectExtensions.cs" />
+    <Compile Include="Common\Extensions\ForOutlook\MAPIFolderExtensions.cs" />
     <Compile Include="Common\Extensions\SizeUnitExtensions.cs" />
-    <Compile Include="Common\Utils\CategoriesSource.cs" />
     <Compile Include="Components\Configurations.cs" />
     <Compile Include="Common\Utils\FoldersSource.cs" />
     <Compile Include="Components\IComponent.cs" />
@@ -195,10 +195,13 @@
     <Compile Include="Components\OnStartInit\Component.cs" />
     <Compile Include="Components\SetDefaultCalendars\Component.cs" />
     <Compile Include="Components\SetDefaultCalendars\Configuration.cs" />
+    <Compile Include="Diagnostics\DebuggerExt.cs" />
     <Compile Include="Diagnostics\EnumerableExtensions.cs" />
     <Compile Include="Diagnostics\LoggerExtensions.cs" />
     <Compile Include="MVVM\Models\Actions.cs" />
+    <Compile Include="MVVM\Models\Calendar.cs" />
     <Compile Include="MVVM\Models\CalendarsAndCategories.cs" />
+    <Compile Include="MVVM\Models\Category.cs" />
     <Compile Include="MVVM\Views\CalendarsAndCategoriesWindow.xaml.cs">
       <DependentUpon>CalendarsAndCategoriesWindow.xaml</DependentUpon>
     </Compile>
