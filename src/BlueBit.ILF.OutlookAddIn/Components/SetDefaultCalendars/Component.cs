@@ -33,28 +33,6 @@ namespace BlueBit.ILF.OutlookAddIn.Components.SetDefaultCalendars
 
         public void Execute()
         {
-                using (var foldersSource = new FoldersSource(
-                    _getRootFolder(),
-                    _cfg.GetCalendarPrefixes().AsPrefixFilter(),
-                    _cfg.GetDeafultCalendars().AsEqualsFilter()
-                    ))
-                {
-                    var window = new CalendarsAndCategoriesWindow();
-                    window.DataContext = new CalendarsAndCategoriesModel(
-                        foldersSource.EnumFolders,
-                        FuncExtensions
-                            .AlwaysTrue<CalendarsAndCategoriesModel>()
-                            .IfTrueThenCloseWindow(window),
-                        FuncExtensions
-                            .AlwaysTrue<CalendarsAndCategoriesModel>()
-                            .IfTrueThenCloseWindow(window)
-                        );
-                    window.Title = Resources.OnAddAppointmentHandler_Caption;
-                    window.ShowDialog();
-                }
-
-
-/*
             using (var foldersSource = new FoldersSource(
                 _getRootFolder(),
                 _cfg.GetCalendarPrefixes().AsPrefixFilter(),
@@ -73,7 +51,6 @@ namespace BlueBit.ILF.OutlookAddIn.Components.SetDefaultCalendars
                     );
                 window.ShowDialog();
             }
-*/
         }
 
         private bool OnApply(CalendarsModel model)

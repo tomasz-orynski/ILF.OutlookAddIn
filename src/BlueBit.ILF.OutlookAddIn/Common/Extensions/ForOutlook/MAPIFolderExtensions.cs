@@ -30,12 +30,15 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Extensions.ForOutlook
                 var row = table.GetNextRow();
                 var cls = row[Columns.MessageClass];
                 var id = row[Columns.EntryId];
-                return XDocument.Parse(Encoding.UTF8.GetString((byte[])row[Columns.Property]))
-                    .Descendants("category")
+                var xml = XDocument.Parse(Encoding.UTF8.GetString((byte[])row[Columns.Property]));
+                return xml
+                    .Root //categories
+                    .Elements() //category[]
                     .Select(_ => (
                         _.Attribute("guid").Value, 
                         _.Attribute("name").Value
-                        ));
+                        ))
+                    ;
             }
             return new (string,string)[] {};
         }

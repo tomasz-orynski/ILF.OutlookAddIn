@@ -49,15 +49,17 @@ namespace BlueBit.ILF.OutlookAddIn.MVVM.Models
                 IsDefault = true,
             });
 
-            _calendars.ForEach(_ =>
+            _calendars.ForEach(_ => {
                 _.SelectedChanged += calendar =>
                 {
                     if (calendar.IsSelected)
                         calendar.Categories.ForEach(_categories.Add);
                     else
                         calendar.Categories.ForEachFunc(_categories.Remove);
-                }
-            );
+                };
+                if (_.IsSelected)
+                    _.Categories.ForEach(_categories.Add);
+            });
         }
     }
 }

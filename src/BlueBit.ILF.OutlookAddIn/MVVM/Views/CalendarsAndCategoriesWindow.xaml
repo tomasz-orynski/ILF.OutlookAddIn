@@ -25,8 +25,9 @@
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="3*"/>
             <RowDefinition Height="35"/>
         </Grid.RowDefinitions>
 
@@ -42,7 +43,20 @@
                 </HierarchicalDataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <ListBox ItemsSource="{Binding Source={StaticResource CategoriesSource}}" Grid.Row="1" Grid.Column="0" SelectionMode="Multiple">
+        
+        <GridSplitter 
+            ResizeDirection="Rows" 
+            Grid.Column="0"
+            Grid.ColumnSpan="1"
+            Grid.Row="1"
+            Width="Auto" 
+            Height="4"
+            HorizontalAlignment="Stretch" 
+            VerticalAlignment="Stretch" 
+            Margin="0"
+            />
+        
+        <ListBox ItemsSource="{Binding Source={StaticResource CategoriesSource}}" Grid.Row="2" Grid.Column="0" SelectionMode="Multiple">
             <ListBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}">
                     <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=OneWay}"/>
@@ -55,7 +69,7 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,5,0,0">
+        <StackPanel Grid.Row="3" Grid.Column="0" Margin="0,5,0,0">
             <ItemsControl ItemsSource="{Binding Actions}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
