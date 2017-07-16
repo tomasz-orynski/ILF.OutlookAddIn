@@ -1,7 +1,5 @@
 ﻿using BlueBit.ILF.OutlookAddIn.Common.Extensions;
 using BlueBit.ILF.OutlookAddIn.Properties;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
 using MoreLinq;
 using System;
 using System.Collections.ObjectModel;
@@ -10,15 +8,16 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace BlueBit.ILF.OutlookAddIn.MVVM.Models
 {
-    public class CalendarsAndCategoriesModel
+    public class CalendarsAndCategoriesModel :
+        RootModel<CalendarsAndCategoriesModel>
     {
-        private readonly ObservableCollection<CalendarModel> _calendars = new ObservableCollection<CalendarModel>();
-        private readonly ObservableCollection<CategoryModel> _categories = new ObservableCollection<CategoryModel>();
-        private readonly ObservableCollection<ActionModel> _actions = new ObservableCollection<ActionModel>();
+        protected override CalendarsAndCategoriesModel This => this;
 
+        private readonly ObservableCollection<CalendarModel> _calendars = new ObservableCollection<CalendarModel>();
         public ObservableCollection<CalendarModel> Calendars => _calendars;
+
+        private readonly ObservableCollection<CategoryModel> _categories = new ObservableCollection<CategoryModel>();
         public ObservableCollection<CategoryModel> Categories => _categories;
-        public ObservableCollection<ActionModel> Actions => _actions;
 
         public CalendarsAndCategoriesModel(
             Action<Action<Outlook.NavigationFolder, bool>> foldersEnumerator,
@@ -29,26 +28,13 @@ namespace BlueBit.ILF.OutlookAddIn.MVVM.Models
             Contract.Assert(cmdApply != null);
             Contract.Assert(cmdCancel != null);
 
-
-            _actions.Add(new ActionModel()
-            {
-                Command = new RelayCommand(() => cmdCancel(this)),
-                Name = Resources.CmdCancel,
-                IsCancel = true,
-            });
-
+            CmdCancel = cmdCancel;
             foldersEnumerator((folder, isSelected) => _calendars.Add(new CalendarModel(folder) { IsSelected = isSelected }));
 
             if (_calendars.Count == 0)
                 return;
 
-            _actions.Insert(0, new ActionModel()
-            {
-                Command = new RelayCommand(() => cmdApply(this)),
-                Name = Resources.CmdApply,
-                IsDefault = true,
-            });
-
+            CmdApply = cmdApply;
             _calendars.ForEach(_ => {
                 _.SelectedChanged += calendar =>
                 {

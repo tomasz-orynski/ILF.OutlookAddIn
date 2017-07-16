@@ -202,6 +202,7 @@
     <Compile Include="MVVM\Models\Calendar.cs" />
     <Compile Include="MVVM\Models\CalendarsAndCategories.cs" />
     <Compile Include="MVVM\Models\Category.cs" />
+    <Compile Include="MVVM\Models\Root.cs" />
     <Compile Include="MVVM\Views\CalendarsAndCategoriesWindow.xaml.cs">
       <DependentUpon>CalendarsAndCategoriesWindow.xaml</DependentUpon>
     </Compile>
