@@ -32,7 +32,7 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnAddAppointmentHandler
         }
 
         private void OnItemAdd(object item)
-            => _logger.OnEntryCall(HandlerExtensions.AsSingleEventHandler(() =>
+            => _logger.OnSingleEntryCall<Component>(() =>
             {
                 var appointment = item as Outlook.AppointmentItem;
                 if (appointment == null) return;
@@ -60,7 +60,7 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnAddAppointmentHandler
                     window.Title = Resources.OnAddAppointmentHandler_Caption;
                     window.ShowDialog();
                 }
-            }));
+            });
 
         private bool OnApply(CalendarsAndCategoriesModel model, Outlook.AppointmentItem appointment)
         {

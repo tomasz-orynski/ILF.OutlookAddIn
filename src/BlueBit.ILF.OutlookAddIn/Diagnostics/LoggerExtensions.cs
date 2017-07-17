@@ -42,5 +42,33 @@ namespace BlueBit.ILF.OutlookAddIn.Diagnostics
             EntryCall(@this, () => result = action(), name);
             return result;
         }
+
+        private static class _Lock<T>
+        {
+            public static volatile bool InCall = false;
+        }
+
+        public static void OnSingleEntryCall<TLock>(this Logger @this, Action action, [CallerMemberName]string name = null)
+        {
+            Contract.Assert(@this != null);
+            Contract.Assert(action != null);
+            Contract.Assert(!string.IsNullOrEmpty(name));
+
+            if (_Lock<TLock>.InCall)
+            {
+                @this.Trace("~>" + name);
+                return;
+            }
+            _Lock<TLock>.InCall = true;
+            try
+            {
+                EntryCall(@this, action, name);
+            }
+            finally
+            {
+                _Lock<TLock>.InCall = false;
+            }
+        }
+
     }
 }

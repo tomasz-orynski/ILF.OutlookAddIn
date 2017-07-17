@@ -181,7 +181,6 @@
   <ItemGroup>
     <Compile Include="Common\Extensions\EnumerableExtensions.cs" />
     <Compile Include="Common\Extensions\FuncExtensions.cs" />
-    <Compile Include="Common\Extensions\HandlerExtensions.cs" />
     <Compile Include="Common\Extensions\ObjectExtensions.cs" />
     <Compile Include="Common\Extensions\ForOutlook\MAPIFolderExtensions.cs" />
     <Compile Include="Common\Extensions\SizeUnitExtensions.cs" />

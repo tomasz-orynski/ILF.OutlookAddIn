@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Linq;
 using System.Windows;
 
 namespace BlueBit.ILF.OutlookAddIn.Common.Extensions
