@@ -197,6 +197,7 @@
     <Compile Include="Diagnostics\DebuggerExt.cs" />
     <Compile Include="Diagnostics\EnumerableExtensions.cs" />
     <Compile Include="Diagnostics\LoggerExtensions.cs" />
+    <Compile Include="Diagnostics\ObjectExtensions.cs" />
     <Compile Include="MVVM\Models\Actions.cs" />
     <Compile Include="MVVM\Models\Calendar.cs" />
     <Compile Include="MVVM\Models\CalendarsAndCategories.cs" />

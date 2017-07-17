@@ -37,7 +37,7 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnAddAppointmentHandler
                 var appointment = item as Outlook.AppointmentItem;
                 if (appointment == null) return;
 
-                if (appointment.ResponseStatus != Outlook.OlResponseStatus.olResponseAccepted) return;
+                if (appointment.SafeCheck(_ => _.ResponseStatus != Outlook.OlResponseStatus.olResponseAccepted, true)) return;
                 var rootFolder = (Outlook.Folder)appointment.Parent;
                 if (!rootFolder.FolderPath.StartsWith(@"\\")) return;
 
