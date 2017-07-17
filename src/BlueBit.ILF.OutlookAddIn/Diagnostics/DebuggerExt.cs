@@ -6,8 +6,8 @@ namespace BlueBit.ILF.OutlookAddIn.Diagnostics
     {
         public static void BreakIfAttached()
         {
-            if (Debugger.IsAttached)
-                Debugger.Break();
+            //if (Debugger.IsAttached)
+            //    Debugger.Break();
         }
     }
 }

@@ -66,7 +66,10 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnAddAppointmentHandler
         {
             model.Calendars
                 .Where(_ => _.IsSelected)
-                .ForEach(_ => Clone(_.Folder.Folder.As<Outlook.Folder>(), appointment, string.Join(",", _.Categories.Select(__ => __.Name))));
+                .ForEach(c => Clone(
+                    c.Folder.Folder.As<Outlook.Folder>(), 
+                    appointment, 
+                    string.Join(",", c.Categories.OrderBy(_ => _.Name).Select(_ => _.Name))));
             return true;
         }
 
