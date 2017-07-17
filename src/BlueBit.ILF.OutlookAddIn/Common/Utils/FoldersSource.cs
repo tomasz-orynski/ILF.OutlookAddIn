@@ -43,7 +43,6 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Utils
                 .SelectMany(_ => _.NavigationFolders.Cast<Outlook.NavigationFolder>())
                 .SafeWhere(_ => folderFilter(_.DisplayName))
                 .SafeWhere(_ => _.Folder.FolderPath != rootFolder.FolderPath)
-                .SafeWhere(_ => CheckFolder(_.Folder.As<Outlook.Folder>()))
                 .Select(_ => Tuple.Create(_, folderSelected(_.DisplayName)))
                 .SafeToList()
                 ;
@@ -72,23 +71,6 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Utils
             var explorer = folder.GetExplorer();
             //onDisposeActions.Add(explorer.Close);
             return explorer;
-        }
-
-        static bool CheckFolder(Outlook.Folder folder)
-        {
-            try
-            {
-                var item = (Outlook.AppointmentItem)folder.Items.Add(Outlook.OlItemType.olAppointmentItem);
-                item.Delete();
-                return true;
-            }
-            catch(Exception e)
-            {
-                var msg = $"{nameof(CheckFolder)}({folder.Name})";
-                _logger.Warn(e, msg);
-                DebuggerExt.BreakIfAttached();
-            }
-            return true;
         }
     }
 }
