@@ -13,8 +13,8 @@ namespace BlueBit.ILF.OutlookAddIn.MVVM.Models
         public event Action<CalendarModel> SelectedChanged;
 
 
-        private readonly Outlook.Folder _folder;
-        public Outlook.Folder Folder => _folder;
+        private readonly Outlook.NavigationFolder _folder;
+        public Outlook.NavigationFolder Folder => _folder;
 
         private readonly Lazy<ObservableCollection<CategoryModel>> _categories;
         public ObservableCollection<CategoryModel> Categories => _categories.Value;
@@ -26,9 +26,9 @@ namespace BlueBit.ILF.OutlookAddIn.MVVM.Models
             set { if (Set(() => IsSelected, ref _isSelected, value)) SelectedChanged?.Invoke(this); }
         }
 
-        public string Name => _folder.Name;
+        public string Name => _folder.DisplayName;
 
-        public CalendarModel(Outlook.Folder folder)
+        public CalendarModel(Outlook.NavigationFolder folder)
         {
             Contract.Assert(folder != null);
             _folder = folder;
@@ -37,7 +37,7 @@ namespace BlueBit.ILF.OutlookAddIn.MVVM.Models
 
         private ObservableCollection<CategoryModel> GetCategories()
             => new ObservableCollection<CategoryModel>(
-                _folder
+                _folder.Folder
                 .GetCategories()
                 .Select(_ => new CategoryModel(_)));
     }

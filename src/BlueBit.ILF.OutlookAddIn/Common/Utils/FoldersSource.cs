@@ -16,7 +16,7 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Utils
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly Outlook.Application _application;
-        private readonly IEnumerable<(Outlook.Folder Folder, bool IsSelected)> _foldersSource;
+        private readonly IEnumerable<Tuple<Outlook.NavigationFolder, bool>> _foldersSource;
         private readonly IEnumerable<Action> _onDisposeActions;
 
         public FoldersSource(
@@ -33,15 +33,17 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Utils
             _onDisposeActions = onDisposeActions;
             _application = rootFolder.Application;
 
-            _foldersSource = rootFolder.Application
-                .GetNamespace("MAPI")
-                .Stores
-                .Cast<Outlook.Store>()
-                .SelectMany(_ => _.GetRootFolder().Folders.Cast<Outlook.Folder>())
-                .SafeWhere(_ => _.DefaultMessageClass == "IPM.Appointment")
-                .SafeWhere(_ => folderFilter(_.Name))
-                .OrderBy(_ => _.Name)
-                .Select(_ => (_, folderSelected(_.Name)))
+            _foldersSource = (GetExplorer(rootFolder) ?? GetExplorer(rootFolder, onDisposeActions))
+                .NavigationPane
+                .Modules
+                .GetNavigationModule(Outlook.OlNavigationModuleType.olModuleCalendar)
+                .As<Outlook.CalendarModule>()
+                .NavigationGroups
+                .Cast<Outlook.NavigationGroup>()
+                .SelectMany(_ => _.NavigationFolders.Cast<Outlook.NavigationFolder>())
+                .SafeWhere(_ => folderFilter(_.DisplayName))
+                .SafeWhere(_ => _.Folder.FolderPath != rootFolder.FolderPath)
+                .Select(_ => Tuple.Create(_, folderSelected(_.DisplayName)))
                 .SafeToList()
                 ;
         }
@@ -51,14 +53,24 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Utils
             _onDisposeActions.ForEach(_ => _.Invoke());
         }
 
-        public void EnumFolders(Action<Outlook.Folder, bool> enumAction)
+        public void EnumFolders(Action<Outlook.NavigationFolder, bool> enumAction)
         {
             Contract.Assert(enumAction != null);
             _foldersSource
-                .ForEach(_ => enumAction(_.Folder, _.IsSelected));
+                .ForEach(_ => enumAction(_.Item1, _.Item2));
         }
 
         public IEnumerable<Outlook.Folder> GetFolders()
-            => _foldersSource.Select(_ => _.Folder);
+            => _foldersSource.Select(_ => _.Item1.Folder.As<Outlook.Folder>());
+
+        private Outlook.Explorer GetExplorer(Outlook.Folder folder)
+            => _application.Explorers.Cast<Outlook.Explorer>().FirstOrDefault(_ => _.CurrentFolder.FolderPath == folder.FolderPath);
+
+        private Outlook.Explorer GetExplorer(Outlook.Folder folder, IList<Action> onDisposeActions)
+        {
+            var explorer = folder.GetExplorer();
+            //onDisposeActions.Add(explorer.Close);
+            return explorer;
+        }
     }
 }
