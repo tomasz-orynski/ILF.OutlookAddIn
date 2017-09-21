@@ -15,7 +15,7 @@ namespace BlueBit.ILF.OutlookAddIn.MVVM.Models
         public ObservableCollection<CalendarModel> Calendars => _calendars;
 
         public CalendarsModel(
-            Action<Action<Outlook.NavigationFolder,bool>> foldersEnumerator,
+            Action<Action<Outlook.Folder,bool>> foldersEnumerator,
             Action<CalendarsModel> cmdApply,
             Action<CalendarsModel> cmdCancel)
         {
