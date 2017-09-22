@@ -1,6 +1,7 @@
 ﻿using BlueBit.ILF.OutlookAddIn.Common.Extensions;
 using BlueBit.ILF.OutlookAddIn.Common.Utils;
 using System;
+using System.Windows.Threading;
 using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace BlueBit.ILF.OutlookAddIn.Components.OnStartInit
@@ -11,17 +12,25 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnStartInit
     {
         public void Initialize(Outlook.Application app)
         {
-            Func<Outlook.Folder> getRootFolder = app
-                .GetNamespace("MAPI")
-                .GetDefaultFolder(Outlook.OlDefaultFolders.olFolderCalendar)
-                .As<Outlook.Folder>;
+            var timer = new DispatcherTimer();
+            timer.Interval = new TimeSpan(0, 0, 5);
+            timer.Tick += (s, e) =>
+            {
+                timer.Stop();
 
-            using (var foldersSource = new FoldersSource(
-                getRootFolder(),
-                s => true,
-                s => true
-                ))
-                foldersSource.EnumFolders((fld, sel) => { });
+                Func<Outlook.Folder> getRootFolder = app
+                    .GetNamespace("MAPI")
+                    .GetDefaultFolder(Outlook.OlDefaultFolders.olFolderCalendar)
+                    .As<Outlook.Folder>;
+
+                using (var foldersSource = new FoldersSource(
+                    getRootFolder(),
+                    _ => true,
+                    _ => true
+                    ))
+                    foldersSource.EnumFolders((fld, sel) => { });
+            };
+            timer.Start();
         }
 
         public void Execute()

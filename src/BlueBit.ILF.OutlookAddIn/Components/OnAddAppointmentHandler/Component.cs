@@ -58,7 +58,7 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnAddAppointmentHandler
                             .IfTrueThenCloseWindow(window)
                         );
                     window.Title = Resources.OnAddAppointmentHandler_Caption;
-                    window.ShowDialog();
+                    window.ShowDialog(_logger);
                 }
             });
 
