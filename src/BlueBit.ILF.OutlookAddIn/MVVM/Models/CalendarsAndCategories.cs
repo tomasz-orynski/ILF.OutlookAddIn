@@ -20,7 +20,7 @@ namespace BlueBit.ILF.OutlookAddIn.MVVM.Models
         public ObservableCollection<CategoryModel> Categories => _categories;
 
         public CalendarsAndCategoriesModel(
-            Action<Action<Outlook.NavigationFolder, bool>> foldersEnumerator,
+            Action<Action<Outlook.Folder, bool>> foldersEnumerator,
             Action<CalendarsAndCategoriesModel> cmdApply,
             Action<CalendarsAndCategoriesModel> cmdCancel)
         {
