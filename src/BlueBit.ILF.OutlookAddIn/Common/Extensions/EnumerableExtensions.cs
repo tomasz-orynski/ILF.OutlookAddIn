@@ -8,6 +8,8 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Extensions
 {
     public static class EnumerableExtensions
     {
+        public static IEnumerable<T> NullAsEmpty<T>(this IEnumerable<T> @this) => @this != null ? @this : new T[] { };
+
         public static Func<string, bool> AsPrefixFilter(this IEnumerable<string> @this)
         {
             Contract.Assert(@this != null);

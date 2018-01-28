@@ -42,8 +42,8 @@ namespace BlueBit.ILF.OutlookAddIn.Components
             => GetValue<string>(Calendar_Default, string.Empty).Split(Separator);
         public void SetDeafultCalendars(IEnumerable<string> calendars)
             => SetValue(Calendar_Default, string.Join(Separator.ToString(), calendars));
-        public bool GetInitOnStart()
-            => GetValue<int>("InitOnStart") != 0;
+        public int GetInitOnStart()
+            => GetValue<int>("InitOnStart", 10);
 
         public void Initialize(Application app)
         {

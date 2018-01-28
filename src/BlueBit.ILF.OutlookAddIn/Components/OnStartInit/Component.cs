@@ -32,22 +32,47 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnStartInit
 
         public void Initialize(Outlook.Application app)
         {
-            var getRootFolder = new Lazy<Outlook.Folder>(() => app
-                .GetNamespace("MAPI")
-                .GetDefaultFolder(Outlook.OlDefaultFolders.olFolderCalendar)
-                .As<Outlook.Folder>());
+            var names = new List<string>() { "Calendar", "Kalendarz" };
+            var getRootFolder = new Lazy<Outlook.Folder>(() =>
+            {
+                var fld = app
+                    .GetNamespace("MAPI")
+                    .GetDefaultFolder(Outlook.OlDefaultFolders.olFolderCalendar);
+                var explorer = app.ActiveExplorer();
+                explorer.CurrentFolder = fld;
+                foreach (Outlook.View view in fld.Views)
+                {
+                    if (names.Contains(view.Name))
+                    {
+                        var calView = (Outlook.CalendarView)view;
+                        explorer.CurrentView = calView;
+                        calView.Apply();
+                        break;
+                    }
+                }
+                return fld.As<Outlook.Folder>();
+            });
 
             _categories = new Lazy<IReadOnlyDictionary<string, IReadOnlyList<(string id, string name)>>>(OnGetCategories);
             _foldersSource = new Lazy<IFoldersSource>(() => OnCreateFoldersSource(getRootFolder));
 
-            if (_cfg.GetInitOnStart())
+            var initOnStart = _cfg.GetInitOnStart();
+            if (initOnStart > 0)
             {
                 var timer = new DispatcherTimer();
-                timer.Interval = new TimeSpan(0, 0, 15);
+                timer.Interval = new TimeSpan(0, 0, initOnStart);
+                var timer2 = new DispatcherTimer();
+                timer2.Interval = new TimeSpan(0, 0, 1);
+                timer2.Tick += (s, e) =>
+                {
+                    timer2.Stop();
+                    OnTimer();
+                };
                 timer.Tick += (s, e) =>
                 {
                     timer.Stop();
-                    OnTimer();
+                    var fld = getRootFolder.Value;
+                    timer2.Start();
                 };
                 timer.Start();
             }
@@ -64,7 +89,7 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnStartInit
                 _foldersSource.Value.EnumFolders((fld, sel) =>
                 {
                     var folder = fld.Folder;
-                    dict.Add(folder.FolderPath, folder.GetCategories().ToList());
+                    dict[folder.FolderPath] = folder.GetCategories().NullAsEmpty().ToList();
                 });
                 return dict;
             });

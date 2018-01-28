@@ -3,6 +3,7 @@ using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Xml.Linq;
 
@@ -25,27 +26,33 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Extensions.ForOutlook
             var table = folder.GetTable(filter, OlTableContents.olHiddenItems);
             var columns = table.Columns;
             columns.RemoveAll();
-            columns.Add(Columns.MessageClass);
-            columns.Add(Columns.EntryId);
             columns.Add(Columns.Property);
+
+            var builder = new StringBuilder();
             while (!table.EndOfTable)
             {
                 var row = table.GetNextRow();
-                var cls = row[Columns.MessageClass];
-                var id = row[Columns.EntryId];
-                var xmlTxt = Encoding.UTF8.GetString((byte[])row[Columns.Property]);
-                _logger.Trace(() => xmlTxt);
-                var xml = XDocument.Parse($"XML with categories:{Environment.NewLine}{xmlTxt}");
+                var prop = (byte[])row[Columns.Property];
+                builder.Append(Encoding.UTF8.GetString(prop));
+            }
+            _logger.Trace(() => $"XML with categories [{folder.FolderPath}][{folder.Name}]:{Environment.NewLine}{builder.ToString()}");
+            try
+            {
+                var xml = XDocument.Parse(builder.ToString());
                 return xml
                     .Root //categories
                     .Elements() //category[]
                     .Select(_ => (
-                        _.Attribute("guid").Value, 
+                        _.Attribute("guid").Value,
                         _.Attribute("name").Value
                         ))
                     ;
             }
-            return new (string,string)[] {};
+            catch(System.Exception e)
+            {
+                _logger.Error(e);
+                return null;
+            }
         }
     }
 }
