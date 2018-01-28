@@ -16,44 +16,36 @@ namespace BlueBit.ILF.OutlookAddIn.Components.SetDefaultCalendars
         ICommandComponent
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly IEnviroment _env;
         private readonly IConfiguration _cfg;
-        private Func<Outlook.Folder> _getRootFolder;
 
-        public Component(IConfiguration cfg)
+        public Component(
+            IEnviroment env,
+            IConfiguration cfg)
         {
+            _env = env;
             _cfg = cfg;
         }
 
         public void Initialize(Outlook.Application app)
         {
-            _getRootFolder = app
-                .GetNamespace("MAPI")
-                .GetDefaultFolder(Outlook.OlDefaultFolders.olFolderCalendar)
-                .As<Outlook.Folder>;
         }
 
         public CommandID ID => CommandID.SetDefaultCalendars;
 
         public void Execute()
         {
-            using (var foldersSource = new FoldersSource(
-                _getRootFolder(),
-                _cfg.GetCalendarPrefixes().AsPrefixFilter(),
-                _cfg.GetDeafultCalendars().AsEqualsFilter()
-                ))
-            {
-                var window = new CalendarsWindow();
-                window.Title = Resources.SetDefaultCalendars_Caption;
-                window.DataContext = new CalendarsModel(
-                    foldersSource.EnumFolders,
-                    FuncExtensions
-                        .IfTrueThenCloseWindow<CalendarsModel>(OnApply, window),
-                    FuncExtensions
-                        .AlwaysTrue<CalendarsModel>()
-                        .IfTrueThenCloseWindow(window)
-                    );
-                window.ShowDialog(_logger);
-            }
+            var window = new CalendarsWindow();
+            window.Title = Resources.SetDefaultCalendars_Caption;
+            window.DataContext = new CalendarsModel(
+                _env,
+                FuncExtensions
+                    .IfTrueThenCloseWindow<CalendarsModel>(OnApply, window),
+                FuncExtensions
+                    .AlwaysTrue<CalendarsModel>()
+                    .IfTrueThenCloseWindow(window)
+                );
+            window.ShowDialog(_logger);
         }
 
         private bool OnApply(CalendarsModel model)

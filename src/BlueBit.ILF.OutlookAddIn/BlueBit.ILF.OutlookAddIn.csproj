@@ -187,11 +187,14 @@
     <Compile Include="Components\Configurations.cs" />
     <Compile Include="Common\Utils\FoldersSource.cs" />
     <Compile Include="Components\IComponent.cs" />
+    <Compile Include="Components\IEnviroment.cs" />
     <Compile Include="Components\OnAddAppointmentHandler\Component.cs" />
     <Compile Include="Components\OnAddAppointmentHandler\Configuration.cs" />
     <Compile Include="Components\OnSendEmailSizeChecker\Component.cs" />
     <Compile Include="Components\OnSendEmailSizeChecker\Configuration.cs" />
     <Compile Include="Components\OnStartInit\Component.cs" />
+    <Compile Include="Components\OnStartInit\Component.FoldersSource.cs" />
+    <Compile Include="Components\OnStartInit\Configuration.cs" />
     <Compile Include="Components\SetDefaultCalendars\Component.cs" />
     <Compile Include="Components\SetDefaultCalendars\Configuration.cs" />
     <Compile Include="Diagnostics\DebuggerExt.cs" />

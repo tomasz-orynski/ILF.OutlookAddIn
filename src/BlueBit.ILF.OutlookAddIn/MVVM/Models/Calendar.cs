@@ -1,4 +1,5 @@
 ﻿using BlueBit.ILF.OutlookAddIn.Common.Extensions.ForOutlook;
+using BlueBit.ILF.OutlookAddIn.Components;
 using GalaSoft.MvvmLight;
 using System;
 using System.Collections.ObjectModel;
@@ -12,12 +13,11 @@ namespace BlueBit.ILF.OutlookAddIn.MVVM.Models
     {
         public event Action<CalendarModel> SelectedChanged;
 
-
         private readonly Outlook.NavigationFolder _folder;
         public Outlook.NavigationFolder Folder => _folder;
 
-        private readonly Lazy<ObservableCollection<CategoryModel>> _categories;
-        public ObservableCollection<CategoryModel> Categories => _categories.Value;
+        private readonly ObservableCollection<CategoryModel> _categories;
+        public ObservableCollection<CategoryModel> Categories => _categories;
 
         private bool _isSelected;
         public bool IsSelected
@@ -28,17 +28,11 @@ namespace BlueBit.ILF.OutlookAddIn.MVVM.Models
 
         public string Name => _folder.DisplayName;
 
-        public CalendarModel(Outlook.NavigationFolder folder)
+        public CalendarModel(Outlook.NavigationFolder folder, IEnviroment env)
         {
             Contract.Assert(folder != null);
             _folder = folder;
-            _categories = new Lazy<ObservableCollection<CategoryModel>>(GetCategories);
+            _categories = new ObservableCollection<CategoryModel>(env.GetCategories(folder.Folder).Select(_ => new CategoryModel(_)));
         }
-
-        private ObservableCollection<CategoryModel> GetCategories()
-            => new ObservableCollection<CategoryModel>(
-                _folder.Folder
-                .GetCategories()
-                .Select(_ => new CategoryModel(_)));
     }
 }

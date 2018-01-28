@@ -10,7 +10,8 @@ namespace BlueBit.ILF.OutlookAddIn.Components
         ISelfRegisteredComponent,
         OnSendEmailSizeChecker.IConfiguration,
         OnAddAppointmentHandler.IConfiguration,
-        SetDefaultCalendars.IConfiguration
+        SetDefaultCalendars.IConfiguration,
+        OnStartInit.IConfiguration
     {
         private const string Path = @"HKEY_CURRENT_USER\Software\ILF\OutlookApp";
         private const string Calendar_Default = nameof(Calendar_Default);
@@ -41,6 +42,8 @@ namespace BlueBit.ILF.OutlookAddIn.Components
             => GetValue<string>(Calendar_Default, string.Empty).Split(Separator);
         public void SetDeafultCalendars(IEnumerable<string> calendars)
             => SetValue(Calendar_Default, string.Join(Separator.ToString(), calendars));
+        public bool GetInitOnStart()
+            => GetValue<int>("InitOnStart") != 0;
 
         public void Initialize(Application app)
         {

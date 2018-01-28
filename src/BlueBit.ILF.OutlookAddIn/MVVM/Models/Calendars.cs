@@ -1,4 +1,5 @@
-﻿using BlueBit.ILF.OutlookAddIn.Properties;
+﻿using BlueBit.ILF.OutlookAddIn.Components;
+using BlueBit.ILF.OutlookAddIn.Properties;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
@@ -15,16 +16,16 @@ namespace BlueBit.ILF.OutlookAddIn.MVVM.Models
         public ObservableCollection<CalendarModel> Calendars => _calendars;
 
         public CalendarsModel(
-            Action<Action<Outlook.NavigationFolder,bool>> foldersEnumerator,
+            IEnviroment env,
             Action<CalendarsModel> cmdApply,
             Action<CalendarsModel> cmdCancel)
         {
-            Contract.Assert(foldersEnumerator != null);
+            Contract.Assert(env != null);
             Contract.Assert(cmdApply != null);
             Contract.Assert(cmdCancel != null);
 
             CmdCancel = cmdCancel;
-            foldersEnumerator((folder, isSelected) => _calendars.Add(new CalendarModel(folder) { IsSelected = isSelected }));
+            env.FoldersSource.EnumFolders((folder, isSelected) => _calendars.Add(new CalendarModel(folder, env) { IsSelected = isSelected }));
             if (_calendars.Count > 0)
                 CmdApply = cmdApply;
         }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Office.Interop.Outlook;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,8 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Extensions.ForOutlook
             public const string EntryId = nameof(MessageClass);
         }
 
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
+
         public static IEnumerable<(string id, string name)> GetCategories(this MAPIFolder folder)
         {
             var filter = $"[{Columns.MessageClass}] = 'IPM.Configuration.CategoryList'";
@@ -30,7 +33,9 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Extensions.ForOutlook
                 var row = table.GetNextRow();
                 var cls = row[Columns.MessageClass];
                 var id = row[Columns.EntryId];
-                var xml = XDocument.Parse(Encoding.UTF8.GetString((byte[])row[Columns.Property]));
+                var xmlTxt = Encoding.UTF8.GetString((byte[])row[Columns.Property]);
+                _logger.Trace(() => xmlTxt);
+                var xml = XDocument.Parse($"XML with categories:{Environment.NewLine}{xmlTxt}");
                 return xml
                     .Root //categories
                     .Elements() //category[]
