@@ -1,7 +1,7 @@
 ﻿using BlueBit.ILF.OutlookAddIn.Common.Extensions;
 using BlueBit.ILF.OutlookAddIn.Common.Extensions.ForOutlook;
+using BlueBit.ILF.OutlookAddIn.Common.Patterns;
 using BlueBit.ILF.OutlookAddIn.Common.Utils;
-using BlueBit.ILF.OutlookAddIn.Components.OnAddAppointmentHandler;
 using BlueBit.ILF.OutlookAddIn.Diagnostics;
 using NLog;
 using System;
@@ -33,7 +33,7 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnStartInit
         public void Initialize(Outlook.Application app)
         {
             var names = new List<string>() { "Calendar", "Kalendarz" };
-            var getRootFolder = new Lazy<Outlook.Folder>(() =>
+            var getRootFolder = new Lazy<ICW<Outlook.Folder>>(() =>
             {
                 var fld = app
                     .GetNamespace("MAPI")
@@ -88,8 +88,8 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnStartInit
                 var dict = new Dictionary<string, IReadOnlyList<(string id, string name)>>();
                 _foldersSource.Value.EnumFolders((fld, sel) =>
                 {
-                    var folder = fld.Folder;
-                    dict[folder.FolderPath] = folder.GetCategories().NullAsEmpty().ToList();
+                    using (var folder = fld.Folder.AsCW())
+                        dict[folder.Ref.FolderPath] = folder.GetCategoriesFromTable().NullAsEmpty().ToList();
                 });
                 return dict;
             });

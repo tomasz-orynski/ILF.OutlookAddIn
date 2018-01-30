@@ -1,5 +1,4 @@
 ﻿using BlueBit.ILF.OutlookAddIn.Common.Extensions;
-using BlueBit.ILF.OutlookAddIn.Common.Utils;
 using BlueBit.ILF.OutlookAddIn.Diagnostics;
 using BlueBit.ILF.OutlookAddIn.MVVM.Models;
 using BlueBit.ILF.OutlookAddIn.MVVM.Views;
