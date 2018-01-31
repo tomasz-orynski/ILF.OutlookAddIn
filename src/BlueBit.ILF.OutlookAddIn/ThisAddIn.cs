@@ -12,10 +12,8 @@ namespace BlueBit.ILF.OutlookAddIn
 
 {
     public partial class ThisAddIn
-
     {
         private static readonly Logger _logger;
-
         private static readonly IContainer _container;
 
         static ThisAddIn()
@@ -48,11 +46,14 @@ namespace BlueBit.ILF.OutlookAddIn
 
         private void InternalStartup()
             => _logger.OnEntryCall(() =>
+            {
                 _container
-                    .Resolve<IEnumerable<ISelfRegisteredComponent>>()
-                    .ForEach(_ => _.Initialize(this.Application))
-
-            );
+                    .Resolve<IEnumerable<IInitializedAppComponent>>()
+                    .ForEach(_ => _.Initialize(this.Application));
+                _container
+                    .Resolve<IEnumerable<IInitializedComponent>>()
+                    .ForEach(_ => _.Initialize());
+            });
 
         protected override IRibbonExtensibility CreateRibbonExtensibilityObject()
             => _logger.OnEntryCall(_container.Resolve<IRibbonExtensibility>);

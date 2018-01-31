@@ -8,21 +8,23 @@ using BlueBit.ILF.OutlookAddIn.Common.Extensions;
 
 namespace BlueBit.ILF.OutlookAddIn.Components.OnSendEmailSizeChecker
 {
-    public class Component : ISelfRegisteredComponent
+    public class Component : IInitializedComponent
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly IEnviroment _env;
         private readonly IConfiguration _cfg;
-        private Outlook.Application _app;
 
-        public Component(IConfiguration cfg)
+        public Component(
+            IEnviroment env,
+            IConfiguration cfg)
         {
+            _env = env;
             _cfg = cfg;
         }
 
-        public void Initialize(Outlook.Application app)
+        public void Initialize()
         {
-            _app = app;
-            _app.ItemSend += OnItemSend;
+            _env.Application.Ref.ItemSend += OnItemSend;
         }
 
         private void OnItemSend(object item, ref bool cancel)

@@ -1,13 +1,14 @@
-﻿using Microsoft.Office.Interop.Outlook;
+﻿using Outlook = Microsoft.Office.Interop.Outlook;
 using Microsoft.Win32;
 using System.Collections.Generic;
 using System;
 using NLog;
+using BlueBit.ILF.OutlookAddIn.Common.Patterns;
 
 namespace BlueBit.ILF.OutlookAddIn.Components
 {
     public class Configurations :
-        ISelfRegisteredComponent,
+        IComponent,
         OnSendEmailSizeChecker.IConfiguration,
         OnAddAppointmentHandler.IConfiguration,
         SetDefaultCalendars.IConfiguration,
@@ -44,10 +45,5 @@ namespace BlueBit.ILF.OutlookAddIn.Components
             => SetValue(Calendar_Default, string.Join(Separator.ToString(), calendars));
         public int GetInitOnStart()
             => GetValue<int>("InitOnStart", 10);
-
-        public void Initialize(Application app)
-        {
-        }
-
     }
 }

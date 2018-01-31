@@ -18,7 +18,7 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnStartInit
         private class _FoldersSource : IFoldersSource
         {
             private static Logger _logger = LogManager.GetCurrentClassLogger();
-            private readonly IEnumerable<Tuple<Outlook.NavigationFolder, bool>> _foldersSource;
+            private readonly IReadOnlyList<Tuple<ICW<Outlook.NavigationFolder>, bool>> _foldersSource;
 
             public _FoldersSource(
                 ICW<Outlook.Folder> rootFolder,
@@ -36,25 +36,24 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnStartInit
                 using (var navMod = mods.Call(_ => _.GetNavigationModule(Outlook.OlNavigationModuleType.olModuleCalendar).As<Outlook.CalendarModule>()))
                 using (var navGrps = navMod.Call(_ => _.NavigationGroups))
                 {
-                    /* TODO-TO
-                    _foldersSource = (GetExplorer(rootFolder.FolderPath) ?? rootFolder.Call(_ => _.GetExplorer()))
-                        .NavigationPane
-                        .Modules
-                        .GetNavigationModule(Outlook.OlNavigationModuleType.olModuleCalendar)
-                        .As<Outlook.CalendarModule>()
-                        .NavigationGroups
-                        .Cast<Outlook.NavigationGroup>()
-                        .SelectMany(_ => _.NavigationFolders.Cast<Outlook.NavigationFolder>())
-                        .SafeWhere(_ => folderFilter(_.DisplayName))
-                        .SafeWhere(_ => _.Folder.FolderPath != rootFolder.FolderPath)
-                        .Select(_ => Tuple.Create(_, folderSelected(_.DisplayName)))
-                        .SafeToList()
-                        ;
-                    */
+                    var fldSrc = new List<Tuple<ICW<Outlook.NavigationFolder>, bool>>();
+                    _foldersSource = fldSrc;
+
+                    navGrps.ForEach((Outlook.NavigationGroup navGrp) => {
+                        using (var navFlds = navGrp.NavigationFolders.AsCW())
+                            foreach (var navFld in navFlds.Ref.Cast<Outlook.NavigationFolder>().Select(CWExt.AsCW))
+                            {
+                                var name = navFld.Ref.DisplayName;
+                                if (folderFilter(name))
+                                    fldSrc.Add(Tuple.Create(navFld, folderSelected(name)));
+                                else
+                                    navFld.Dispose();
+                            }
+                    });
                 }
             }
 
-            public void EnumFolders(Action<Outlook.NavigationFolder, bool> enumAction)
+            public void EnumFolders(Action<ICW<Outlook.NavigationFolder>, bool> enumAction)
                 => _logger.OnEntryCall(() =>
                 {
                     Contract.Assert(enumAction != null);

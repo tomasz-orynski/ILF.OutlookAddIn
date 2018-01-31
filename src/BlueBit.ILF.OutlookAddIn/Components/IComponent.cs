@@ -1,4 +1,5 @@
-﻿using Microsoft.Office.Interop.Outlook;
+﻿using BlueBit.ILF.OutlookAddIn.Common.Patterns;
+using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace BlueBit.ILF.OutlookAddIn.Components
 {
@@ -6,10 +7,16 @@ namespace BlueBit.ILF.OutlookAddIn.Components
     {
     }
 
-    public interface ISelfRegisteredComponent : IComponent
+    public interface IInitializedComponent : IComponent
     {
-        void Initialize(Application app);
+        void Initialize();
     }
+
+    public interface IInitializedAppComponent : IComponent
+    {
+        void Initialize(Outlook.Application app);
+    }
+
 
     public enum CommandID : byte
     {

@@ -41,6 +41,9 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Patterns
         public static ICW<T> AsCW<T>(this T @ref)
             where T : class
             => new CW<T>(@ref);
+        public static ICW<T> AsCW_<T>(this object @ref)
+            where T : class
+            => new CW<T>((T)@ref);
 
         public static ICW<TProp> Call<T, TProp>(this ICW<T> @this, Func<T, TProp> getter)
             where T : class

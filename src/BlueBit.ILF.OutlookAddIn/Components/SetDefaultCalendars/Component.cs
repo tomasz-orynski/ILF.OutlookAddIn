@@ -12,7 +12,7 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 namespace BlueBit.ILF.OutlookAddIn.Components.SetDefaultCalendars
 {
     public class Component : 
-        ISelfRegisteredComponent,
+        IComponent,
         ICommandComponent
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
@@ -25,10 +25,6 @@ namespace BlueBit.ILF.OutlookAddIn.Components.SetDefaultCalendars
         {
             _env = env;
             _cfg = cfg;
-        }
-
-        public void Initialize(Outlook.Application app)
-        {
         }
 
         public CommandID ID => CommandID.SetDefaultCalendars;

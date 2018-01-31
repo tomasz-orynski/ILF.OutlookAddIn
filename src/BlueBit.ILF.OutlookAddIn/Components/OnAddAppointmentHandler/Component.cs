@@ -1,4 +1,5 @@
 ﻿using BlueBit.ILF.OutlookAddIn.Common.Extensions;
+using BlueBit.ILF.OutlookAddIn.Common.Patterns;
 using BlueBit.ILF.OutlookAddIn.Diagnostics;
 using BlueBit.ILF.OutlookAddIn.MVVM.Models;
 using BlueBit.ILF.OutlookAddIn.MVVM.Views;
@@ -10,24 +11,19 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace BlueBit.ILF.OutlookAddIn.Components.OnAddAppointmentHandler
 {
-    public class Component : ISelfRegisteredComponent
+    public class Component : IInitializedComponent
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly IEnviroment _env;
-        private Outlook.Items _items;
 
         public Component(IEnviroment env)
         {
             _env = env;
         }
 
-        public void Initialize(Outlook.Application app)
+        public void Initialize()
         {
-            _items = app
-                .GetNamespace("MAPI")
-                .GetDefaultFolder(Outlook.OlDefaultFolders.olFolderCalendar)
-                .Items;
-            _items.ItemAdd += OnItemAdd;
+            _env.CalendarItems.Ref.ItemAdd += OnItemAdd;
         }
 
         private void OnItemAdd(object item)
@@ -35,10 +31,10 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnAddAppointmentHandler
             {
                 var appointment = item as Outlook.AppointmentItem;
                 if (appointment == null) return;
-
                 if (appointment.SafeCheck(_ => _.ResponseStatus != Outlook.OlResponseStatus.olResponseAccepted, true)) return;
-                var rootFolder = (Outlook.Folder)appointment.Parent;
-                if (!rootFolder.FolderPath.StartsWith(@"\\")) return;
+
+                using (var rootFolder = appointment.Parent.AsCW_<Outlook.Folder>())
+                    if (!rootFolder.Ref.FolderPath.StartsWith(@"\\")) return;
 
                 var window = new CalendarsAndCategoriesWindow();
                 window.DataContext = new CalendarsAndCategoriesModel(
@@ -56,25 +52,32 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnAddAppointmentHandler
 
         private bool OnApply(CalendarsAndCategoriesModel model, Outlook.AppointmentItem appointment)
         {
-            model.Calendars
+            var dict = model.Calendars
                 .Where(_ => _.IsSelected)
-                .ForEach(c => Clone(
-                    c.Folder.Folder.As<Outlook.Folder>(), 
-                    appointment, 
-                    string.Join(",", c.Categories.Where(_ => _.IsSelected).OrderBy(_ => _.Name).Select(_ => _.Name))));
+                .ToDictionary(_ => _.ID, c => string.Join(",", c.Categories.Where(_ => _.IsSelected).OrderBy(_ => _.Name).Select(_ => _.Name)));
+            _env.FoldersSource.EnumFolders((folder, sel) =>
+            {
+                var id = CalendarModel.GetID(folder);
+                if (dict.TryGetValue(id, out var categories))
+                {
+                    using (var fld = folder.Call(_ => _.Folder))
+                        Clone(fld, appointment, categories);
+                }
+            });
             return true;
         }
 
-        private static Outlook.AppointmentItem Clone(Outlook.Folder folder, Outlook.AppointmentItem source, string categories)
+        private void Clone(
+            ICW<Outlook.MAPIFolder> folder, 
+            Outlook.AppointmentItem source, 
+            string categories)
         {
-            var item = (Outlook.AppointmentItem)folder.Items.Add(Outlook.OlItemType.olAppointmentItem);
-            item.Delete();
-            item = (Outlook.AppointmentItem)source.Copy();
-            item = (Outlook.AppointmentItem)item.Move(folder);
-            item.Subject = source.Application.Session.CurrentUser.Name;
-            item.Categories = categories;
-            item.Save();
-            return item;
+            using (var item = source.CopyTo(folder.Ref, Outlook.OlAppointmentCopyOptions.olCreateAppointment).AsCW())
+            {
+                item.Ref.Subject = _env.UserName;
+                item.Ref.Categories = categories;
+                item.Ref.Save();
+            }
         }
     }
 }

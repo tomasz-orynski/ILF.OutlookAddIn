@@ -1,4 +1,5 @@
 ﻿using BlueBit.ILF.OutlookAddIn.Common.Extensions.ForOutlook;
+using BlueBit.ILF.OutlookAddIn.Common.Patterns;
 using BlueBit.ILF.OutlookAddIn.Components;
 using GalaSoft.MvvmLight;
 using System;
@@ -13,11 +14,11 @@ namespace BlueBit.ILF.OutlookAddIn.MVVM.Models
     {
         public event Action<CalendarModel> SelectedChanged;
 
-        private readonly Outlook.NavigationFolder _folder;
-        public Outlook.NavigationFolder Folder => _folder;
+        private readonly string _folderPath;
 
-        private readonly ObservableCollection<CategoryModel> _categories;
-        public ObservableCollection<CategoryModel> Categories => _categories;
+        public string ID => _folderPath;
+        public string Name { get; }
+        public ObservableCollection<CategoryModel> Categories { get; }
 
         private bool _isSelected;
         public bool IsSelected
@@ -26,13 +27,22 @@ namespace BlueBit.ILF.OutlookAddIn.MVVM.Models
             set { if (Set(() => IsSelected, ref _isSelected, value)) SelectedChanged?.Invoke(this); }
         }
 
-        public string Name => _folder.DisplayName;
-
-        public CalendarModel(Outlook.NavigationFolder folder, IEnviroment env)
+        public CalendarModel(ICW<Outlook.NavigationFolder> folder, IEnviroment env)
         {
             Contract.Assert(folder != null);
-            _folder = folder;
-            _categories = new ObservableCollection<CategoryModel>(env.GetCategories(folder.Folder).Select(_ => new CategoryModel(_)));
+            Name = folder.Ref.DisplayName;
+            using (var fld = folder.Call(_ => _.Folder))
+            {
+                _folderPath = fld.Ref.FolderPath;
+                Categories = new ObservableCollection<CategoryModel>(env.GetCategories(fld).Select(_ => new CategoryModel(_)));
+            }
         }
+
+        public static string GetID(ICW<Outlook.NavigationFolder> folder)
+        {
+            using (var fld = folder.Call(_ => _.Folder))
+                return fld.Ref.FolderPath;
+        }
+                
     }
 }
