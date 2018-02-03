@@ -95,12 +95,12 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnStartInit
             using (var views = _calendarFolder.Call(_ => _.Views))
             {
                 explorer.Ref.CurrentFolder = _calendarFolder.Ref;
-                views.ForEach_((Outlook.View view) =>
+                views.ForEach((ICW<Outlook.View> view) =>
                 {
-                    if (names.Contains(view.Name))
+                    if (names.Contains(view.Ref.Name))
                     {
-                        explorer.Ref.CurrentView = view;
-                        view.Apply();
+                        explorer.Ref.CurrentView = view.Ref;
+                        view.Ref.Apply();
                     }
                 });
             }

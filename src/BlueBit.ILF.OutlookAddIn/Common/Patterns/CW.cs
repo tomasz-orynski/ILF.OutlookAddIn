@@ -59,37 +59,5 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Patterns
                 using (var itemCw = item.AsCW())
                     action(itemCw);
         }
-
-        public static void ForEach_<T, TItem>(this ICW<T> @this, Action<TItem> action)
-            where T : class, IEnumerable
-            where TItem : class
-        {
-            foreach (TItem item in @this.Ref)
-                try
-                {
-                    action(item);
-                }
-                finally
-                {
-                    if (item != null)
-                        Marshal.ReleaseComObject(item);
-                }
-        }
-
-        public static IEnumerable<TResult> Select<T, TItem, TResult>(this ICW<T> @this, Func<TItem, TResult> action)
-            where T : class, IEnumerable
-            where TItem : class
-        {
-            foreach (TItem item in @this.Ref)
-                try
-                {
-                    yield return action(item);
-                }
-                finally
-                {
-                    if (item != null)
-                        Marshal.ReleaseComObject(item);
-                }
-        }
     }
 }

@@ -43,7 +43,8 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Extensions.ForOutlook
                 {
                     using (var row = table.Call(_ => _.GetNextRow()))
                     {
-                        var prop = (byte[])row.Ref[Consts.PropertyId];
+                        var obj = row.Ref[Consts.PropertyId];
+                        var prop = (byte[])obj;
                         builder.Append(Encoding.UTF8.GetString(prop));
                     }
                 }
