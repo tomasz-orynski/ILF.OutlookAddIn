@@ -38,7 +38,6 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnStartInit
             }
 
             private static Logger _logger = LogManager.GetCurrentClassLogger();
-            private readonly ICW<Outlook.Folder> _rootFolder;
             private readonly IReadOnlyList<FolderSource> _folders;
 
             public _FoldersSource(
@@ -51,8 +50,7 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnStartInit
                 Contract.Assert(folderFilter != null);
                 Contract.Assert(folderSelected != null);
 
-                _rootFolder = rootFolder;
-                using (var explorer = GetExplorer(_rootFolder))
+                using (var explorer = GetExplorer(rootFolder))
                 using (var navPane = explorer.Call(_ => _.NavigationPane))
                 using (var mods = navPane.Call(_ => _.Modules))
                 using (var navMod = mods.Call(_ => _.GetNavigationModule(Outlook.OlNavigationModuleType.olModuleCalendar).As<Outlook.CalendarModule>()))
