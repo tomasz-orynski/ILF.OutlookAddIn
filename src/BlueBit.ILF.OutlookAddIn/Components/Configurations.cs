@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System;
 using NLog;
 using BlueBit.ILF.OutlookAddIn.Common.Patterns;
+using System.Linq;
 
 namespace BlueBit.ILF.OutlookAddIn.Components
 {
@@ -42,7 +43,7 @@ namespace BlueBit.ILF.OutlookAddIn.Components
         public IEnumerable<string> GetDeafultCalendars()
             => GetValue<string>(Calendar_Default, string.Empty).Split(Separator);
         public void SetDeafultCalendars(IEnumerable<string> calendars)
-            => SetValue(Calendar_Default, string.Join(Separator.ToString(), calendars));
+            => SetValue(Calendar_Default, string.Join(Separator.ToString(), calendars.OrderBy(_ => _)));
         public int GetInitOnStart()
             => GetValue<int>("InitOnStart", 10);
     }

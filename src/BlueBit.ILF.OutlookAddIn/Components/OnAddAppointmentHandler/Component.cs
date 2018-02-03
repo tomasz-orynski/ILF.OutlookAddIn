@@ -33,7 +33,7 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnAddAppointmentHandler
                 if (appointment == null) return;
                 if (appointment.SafeCheck(_ => _.ResponseStatus != Outlook.OlResponseStatus.olResponseAccepted, true)) return;
 
-                using (var rootFolder = appointment.Parent.AsCW_<Outlook.Folder>())
+                using (var rootFolder = CWExt.AsCW((Outlook.Folder)appointment.Parent))
                     if (!rootFolder.Ref.FolderPath.StartsWith(@"\\")) return;
 
                 var window = new CalendarsAndCategoriesWindow();
@@ -52,18 +52,14 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnAddAppointmentHandler
 
         private bool OnApply(CalendarsAndCategoriesModel model, Outlook.AppointmentItem appointment)
         {
-            var dict = model.Calendars
+            model.Calendars
                 .Where(_ => _.IsSelected)
-                .ToDictionary(_ => _.ID, c => string.Join(",", c.Categories.Where(_ => _.IsSelected).OrderBy(_ => _.Name).Select(_ => _.Name)));
-            _env.FoldersSource.EnumFolders((folder, sel) =>
-            {
-                var id = CalendarModel.GetID(folder);
-                if (dict.TryGetValue(id, out var categories))
+                .ForEach(c =>
                 {
-                    using (var fld = folder.Call(_ => _.Folder))
+                    var categories = string.Join(",", c.Categories.Where(_ => _.IsSelected).OrderBy(_ => _.Name).Select(_ => _.Name));
+                    using (var fld = _env.FoldersSource.GetFolder(c.Folder))
                         Clone(fld, appointment, categories);
-                }
-            });
+                });
             return true;
         }
 

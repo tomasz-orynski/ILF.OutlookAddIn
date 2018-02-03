@@ -1,5 +1,4 @@
 ﻿using BlueBit.ILF.OutlookAddIn.Common.Extensions;
-using BlueBit.ILF.OutlookAddIn.Common.Extensions.ForOutlook;
 using BlueBit.ILF.OutlookAddIn.Common.Patterns;
 using BlueBit.ILF.OutlookAddIn.Common.Utils;
 using BlueBit.ILF.OutlookAddIn.Diagnostics;
@@ -22,7 +21,6 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnStartInit
         private ICW<Outlook.Application> _app;
         private ICW<Outlook.Folder> _calendarFolder;
         private ICW<Outlook.Items> _calendarItems;
-        private IReadOnlyDictionary<string, IReadOnlyList<(string id, string name)>> _categories;
         private IFoldersSource _foldersSource;
 
         public string UserName => _userName;
@@ -30,9 +28,6 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnStartInit
         public ICW<Outlook.Folder> CalendarFolder => _calendarFolder;
         public ICW<Outlook.Items> CalendarItems => _calendarItems;
         public IFoldersSource FoldersSource => _foldersSource;
-
-        public IReadOnlyList<(string id, string name)> GetCategories(ICW<Outlook.MAPIFolder> folder) => _categories[folder.Ref.FolderPath];
-
 
         public Component(IConfiguration cfg)
         {
@@ -89,7 +84,6 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnStartInit
                 1,
                 () => {
                     _foldersSource = OnCreateFoldersSource();
-                    _categories = OnCreateCategories();
                 }
             );
         }
@@ -101,7 +95,7 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnStartInit
             using (var views = _calendarFolder.Call(_ => _.Views))
             {
                 explorer.Ref.CurrentFolder = _calendarFolder.Ref;
-                views.ForEach((Outlook.View view) =>
+                views.ForEach_((Outlook.View view) =>
                 {
                     if (names.Contains(view.Name))
                     {
@@ -111,18 +105,6 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnStartInit
                 });
             }
         }
-
-        private Dictionary<string, IReadOnlyList<(string id, string name)>> OnCreateCategories()
-            => _logger.OnEntryCall(() =>
-            {
-                var dict = new Dictionary<string, IReadOnlyList<(string id, string name)>>();
-                _foldersSource.EnumFolders((fld, sel) =>
-                {
-                    using (var f = fld.Call(_ => _.Folder))
-                        dict[f.Ref.FolderPath] = f.GetCategoriesFromTable().NullAsEmpty().ToList();
-                });
-                return dict;
-            });
 
         private _FoldersSource OnCreateFoldersSource()
             => _logger.OnEntryCall(() => new _FoldersSource(

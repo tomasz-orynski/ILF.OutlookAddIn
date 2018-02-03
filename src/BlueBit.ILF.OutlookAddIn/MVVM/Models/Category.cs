@@ -14,10 +14,10 @@ namespace BlueBit.ILF.OutlookAddIn.MVVM.Models
         public string ID { get; }
         public string Name { get;  }
 
-        public CategoryModel((string id, string name) category)
+        public CategoryModel((string ID, string Name) category)
         {
-            ID = category.id;
-            Name = category.name;
+            ID = category.ID;
+            Name = category.Name;
         }
     }
 }

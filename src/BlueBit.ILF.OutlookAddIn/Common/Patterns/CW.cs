@@ -51,7 +51,16 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Patterns
             => getter(@this.Ref).AsCW();
 
 
-        public static void ForEach<T, TItem>(this ICW<T> @this, Action<TItem> action)
+        public static void ForEach<T, TItem>(this ICW<T> @this, Action<ICW<TItem>> action)
+            where T : class, IEnumerable
+            where TItem : class
+        {
+            foreach (TItem item in @this.Ref)
+                using (var itemCw = item.AsCW())
+                    action(itemCw);
+        }
+
+        public static void ForEach_<T, TItem>(this ICW<T> @this, Action<TItem> action)
             where T : class, IEnumerable
             where TItem : class
         {

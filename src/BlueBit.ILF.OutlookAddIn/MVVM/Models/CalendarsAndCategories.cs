@@ -1,11 +1,9 @@
 ﻿using BlueBit.ILF.OutlookAddIn.Common.Extensions;
 using BlueBit.ILF.OutlookAddIn.Components;
-using BlueBit.ILF.OutlookAddIn.Properties;
 using MoreLinq;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
-using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace BlueBit.ILF.OutlookAddIn.MVVM.Models
 {
@@ -30,7 +28,7 @@ namespace BlueBit.ILF.OutlookAddIn.MVVM.Models
             Contract.Assert(cmdCancel != null);
 
             CmdCancel = cmdCancel;
-            env.FoldersSource.EnumFolders((folder, isSelected) => _calendars.Add(new CalendarModel(folder, env) { IsSelected = isSelected }));
+            env.FoldersSource.Folders.ForEach(folder => _calendars.Add(new CalendarModel(folder, env)));
 
             if (_calendars.Count == 0)
                 return;

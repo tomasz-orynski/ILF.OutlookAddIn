@@ -55,6 +55,7 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Extensions.ForOutlook
 
         private static IEnumerable<(string id, string name)> GetCategories(string xmlStr)
         {
+            if (string.IsNullOrWhiteSpace(xmlStr)) return null;
             var xml = XDocument.Parse(xmlStr);
             return xml
                 .Root //categories

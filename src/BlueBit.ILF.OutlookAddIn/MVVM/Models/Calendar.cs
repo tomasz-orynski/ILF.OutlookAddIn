@@ -1,12 +1,11 @@
-﻿using BlueBit.ILF.OutlookAddIn.Common.Extensions.ForOutlook;
-using BlueBit.ILF.OutlookAddIn.Common.Patterns;
+﻿using BlueBit.ILF.OutlookAddIn.Common.Patterns;
+using BlueBit.ILF.OutlookAddIn.Common.Utils;
 using BlueBit.ILF.OutlookAddIn.Components;
 using GalaSoft.MvvmLight;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace BlueBit.ILF.OutlookAddIn.MVVM.Models
 {
@@ -14,11 +13,12 @@ namespace BlueBit.ILF.OutlookAddIn.MVVM.Models
     {
         public event Action<CalendarModel> SelectedChanged;
 
-        private readonly string _folderPath;
+        private readonly IFolderSource _folder;
+        private readonly Lazy<ObservableCollection<CategoryModel>> _categories;
 
-        public string ID => _folderPath;
-        public string Name { get; }
-        public ObservableCollection<CategoryModel> Categories { get; }
+        public IFolderSource Folder => _folder;
+        public string Name => _folder.Name;
+        public ObservableCollection<CategoryModel> Categories => _categories.Value;
 
         private bool _isSelected;
         public bool IsSelected
@@ -27,22 +27,12 @@ namespace BlueBit.ILF.OutlookAddIn.MVVM.Models
             set { if (Set(() => IsSelected, ref _isSelected, value)) SelectedChanged?.Invoke(this); }
         }
 
-        public CalendarModel(ICW<Outlook.NavigationFolder> folder, IEnviroment env)
+        public CalendarModel(IFolderSource folder, IEnviroment env)
         {
             Contract.Assert(folder != null);
-            Name = folder.Ref.DisplayName;
-            using (var fld = folder.Call(_ => _.Folder))
-            {
-                _folderPath = fld.Ref.FolderPath;
-                Categories = new ObservableCollection<CategoryModel>(env.GetCategories(fld).Select(_ => new CategoryModel(_)));
-            }
+            _folder = folder;
+            _categories = new Lazy<ObservableCollection<CategoryModel>>(() => new ObservableCollection<CategoryModel>(_folder.Categories.Select(_ => new CategoryModel(_))));
+            _isSelected = folder.IsSelected;
         }
-
-        public static string GetID(ICW<Outlook.NavigationFolder> folder)
-        {
-            using (var fld = folder.Call(_ => _.Folder))
-                return fld.Ref.FolderPath;
-        }
-                
     }
 }

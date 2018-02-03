@@ -1,6 +1,5 @@
 ﻿using BlueBit.ILF.OutlookAddIn.Common.Patterns;
 using BlueBit.ILF.OutlookAddIn.Common.Utils;
-using System.Collections.Generic;
 using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace BlueBit.ILF.OutlookAddIn.Components
@@ -13,7 +12,5 @@ namespace BlueBit.ILF.OutlookAddIn.Components
         ICW<Outlook.Items> CalendarItems { get; }
 
         IFoldersSource FoldersSource { get; }
-
-        IReadOnlyList<(string id, string name)> GetCategories(ICW<Outlook.MAPIFolder> folder);
     }
 }

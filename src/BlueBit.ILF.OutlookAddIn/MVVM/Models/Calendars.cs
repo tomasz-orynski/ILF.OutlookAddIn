@@ -1,9 +1,8 @@
 ﻿using BlueBit.ILF.OutlookAddIn.Components;
-using BlueBit.ILF.OutlookAddIn.Properties;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
-using Outlook = Microsoft.Office.Interop.Outlook;
+using System.Linq;
 
 namespace BlueBit.ILF.OutlookAddIn.MVVM.Models
 {
@@ -12,8 +11,8 @@ namespace BlueBit.ILF.OutlookAddIn.MVVM.Models
     {
         protected override CalendarsModel This => this;
 
-        private readonly ObservableCollection<CalendarModel> _calendars = new ObservableCollection<CalendarModel>();
-        public ObservableCollection<CalendarModel> Calendars => _calendars;
+        private readonly Lazy<ObservableCollection<CalendarModel>> _calendars;
+        public ObservableCollection<CalendarModel> Calendars => _calendars.Value;
 
         public CalendarsModel(
             IEnviroment env,
@@ -25,9 +24,9 @@ namespace BlueBit.ILF.OutlookAddIn.MVVM.Models
             Contract.Assert(cmdCancel != null);
 
             CmdCancel = cmdCancel;
-            env.FoldersSource.EnumFolders((folder, isSelected) => _calendars.Add(new CalendarModel(folder, env) { IsSelected = isSelected }));
-            if (_calendars.Count > 0)
+            if (env.FoldersSource.Folders.Count > 0)
                 CmdApply = cmdApply;
+            _calendars = new Lazy<ObservableCollection<CalendarModel>>(() => new ObservableCollection<CalendarModel>(env.FoldersSource.Folders.Select(_ => new CalendarModel(_, env))));
         }
     }
 }
