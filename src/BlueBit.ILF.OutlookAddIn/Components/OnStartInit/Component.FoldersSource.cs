@@ -20,10 +20,21 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnStartInit
         {
             private class FolderSource : IFolderSource
             {
-                public string ID { get; set; }
+                private ICW<Outlook.MAPIFolder> _folder;
+                private Lazy<IReadOnlyList<(string ID, string Name)>> _categories;
+
+                public ICW<Outlook.MAPIFolder> Folder => _folder;
+                public string ID => _folder.Ref.FolderPath;
                 public string Name { get; set; }
                 public bool IsSelected { get; set; }
-                public IReadOnlyList<(string ID, string Name)> Categories { get; set; }
+
+                public IReadOnlyList<(string ID, string Name)> Categories => _categories.Value;
+
+                public FolderSource(ICW<Outlook.MAPIFolder> folder)
+                {
+                    _folder = folder;
+                    _categories = new Lazy<IReadOnlyList<(string ID, string Name)>>(() => _folder.GetCategoriesFromTable().NullAsEmpty().ToList());
+                }
             }
 
             private static Logger _logger = LogManager.GetCurrentClassLogger();
@@ -56,31 +67,16 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnStartInit
                             {
                                 var name = navFld.Ref.DisplayName;
                                 if (folderFilter(name))
-                                    using (var fld = navFld.Call(_ => _.Folder))
-                                        fldSrc.Add(new FolderSource() {
-                                            ID = fld.Ref.FolderPath,
+                                        fldSrc.Add(new FolderSource(navFld.Call(_ => _.Folder)) {
                                             Name = name,
                                             IsSelected = folderSelected(name),
-                                            Categories = fld.GetCategoriesFromTable().NullAsEmpty().ToList(),
                                         });
                             });
                     });
                 }
-
-                var tmp = GetFolder(_folders[0]);
             }
 
             public IReadOnlyList<IFolderSource> Folders => _folders;
-
-            public ICW<Outlook.Folder> GetFolder(IFolderSource folderSource)
-            {
-                using (var rootItems = _rootFolder.Call(_ => _.Items))
-                using (var rootItem = rootItems.Call(_ => (object)_[1]))
-                {
-
-                }
-                return null;
-            }
 
             private ICW<Outlook.Explorer> GetExplorer(ICW<Outlook.Folder> folder)
             {

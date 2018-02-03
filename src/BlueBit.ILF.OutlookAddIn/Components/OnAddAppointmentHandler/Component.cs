@@ -57,8 +57,7 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnAddAppointmentHandler
                 .ForEach(c =>
                 {
                     var categories = string.Join(",", c.Categories.Where(_ => _.IsSelected).OrderBy(_ => _.Name).Select(_ => _.Name));
-                    using (var fld = _env.FoldersSource.GetFolder(c.Folder))
-                        Clone(fld, appointment, categories);
+                    Clone(c.Folder.Folder, appointment, categories);
                 });
             return true;
         }
