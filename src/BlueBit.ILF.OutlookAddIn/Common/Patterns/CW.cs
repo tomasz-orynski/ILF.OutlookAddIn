@@ -28,7 +28,7 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Patterns
         protected override void OnDispose()
         {
             if (_ref != null)
-                Marshal.ReleaseComObject(Ref);
+                Marshal.FinalReleaseComObject(Ref);
         }
     }
 

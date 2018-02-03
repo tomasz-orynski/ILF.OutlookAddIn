@@ -37,8 +37,8 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Extensions.ForOutlook
             var filter = $"[{Consts.MessageClass}] = '{Consts.MessageClassId}'";
             using (var table = folder.Call(_ => _.GetTable(filter, Outlook.OlTableContents.olHiddenItems)))
             using (var columns = table.Call(_ => _.Columns))
+            using (var column = columns.Call(_ => _.Add(Consts.PropertyId)))
             {
-                columns.Ref.Add(Consts.PropertyId);
                 while (!table.Ref.EndOfTable)
                 {
                     using (var row = table.Call(_ => _.GetNextRow()))
