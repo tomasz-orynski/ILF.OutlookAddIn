@@ -28,7 +28,7 @@ namespace BlueBit.ILF.OutlookAddIn.MVVM.Models
             Contract.Assert(cmdCancel != null);
 
             CmdCancel = cmdCancel;
-            env.FoldersSource.Folders.ForEach(folder => _calendars.Add(new CalendarModel(folder, env)));
+            env.FoldersSource.Folders.ForEach(_ => _calendars.Add(new CalendarModel(_.Value, env)));
 
             if (_calendars.Count == 0)
                 return;

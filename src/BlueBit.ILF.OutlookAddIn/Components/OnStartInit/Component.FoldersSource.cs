@@ -20,25 +20,14 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnStartInit
         {
             private class FolderSource : IFolderSource
             {
-                private ICW<Outlook.MAPIFolder> _folder;
-                private Lazy<IReadOnlyList<(string ID, string Name)>> _categories;
-
-                public ICW<Outlook.MAPIFolder> Folder => _folder;
-                public string ID => _folder.Ref.FolderPath;
+                public string ID { get; set; }
                 public string Name { get; set; }
                 public bool IsSelected { get; set; }
-
-                public IReadOnlyList<(string ID, string Name)> Categories => _categories.Value;
-
-                public FolderSource(ICW<Outlook.MAPIFolder> folder)
-                {
-                    _folder = folder;
-                    _categories = new Lazy<IReadOnlyList<(string ID, string Name)>>(() => _folder.GetCategoriesFromTable().NullAsEmpty().ToList());
-                }
             }
 
             private static Logger _logger = LogManager.GetCurrentClassLogger();
-            private readonly IReadOnlyList<FolderSource> _folders;
+            private readonly IReadOnlyDictionary<string, IFolderSource> _folders;
+            private readonly Action<Action<ICW<Outlook.NavigationFolder>>> _iterator;
 
             public _FoldersSource(
                 ICW<Outlook.Folder> rootFolder,
@@ -50,33 +39,56 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnStartInit
                 Contract.Assert(folderFilter != null);
                 Contract.Assert(folderSelected != null);
 
-                using (var explorer = GetExplorer(rootFolder))
-                using (var navPane = explorer.Call(_ => _.NavigationPane))
-                using (var mods = navPane.Call(_ => _.Modules))
-                using (var navMod = mods.Call(_ => _.GetNavigationModule(Outlook.OlNavigationModuleType.olModuleCalendar).As<Outlook.CalendarModule>()))
-                using (var navGrps = navMod.Call(_ => _.NavigationGroups))
+                _iterator = action =>
                 {
-                    var fldSrc = new List<FolderSource>();
-                    _folders = fldSrc;
+                    using (var explorer = GetExplorer(rootFolder))
+                    using (var navPane = explorer.Call(_ => _.NavigationPane))
+                    using (var mods = navPane.Call(_ => _.Modules))
+                    using (var navMod = mods.Call(_ => _.GetNavigationModule(Outlook.OlNavigationModuleType.olModuleCalendar).As<Outlook.CalendarModule>()))
+                    using (var navGrps = navMod.Call(_ => _.NavigationGroups))
+                        navGrps.ForEach((ICW<Outlook.NavigationGroup> navGrp) =>
+                        {
+                            using (var navFlds = navGrp.Call(_ => _.NavigationFolders))
+                                navFlds.ForEach(action);
+                        });
+                };
 
-                    navGrps.ForEach((ICW<Outlook.NavigationGroup> navGrp) => {
-                        using (var navFlds = navGrp.Call(_ => _.NavigationFolders))
-                            navFlds.ForEach((ICW<Outlook.NavigationFolder> navFld) =>
-                            {
-                                var name = navFld.Ref.DisplayName;
-                                if (folderFilter(name))
-                                        fldSrc.Add(new FolderSource(navFld.Call(_ => _.Folder)) {
-                                            Name = name,
-                                            IsSelected = folderSelected(name),
-                                        });
-                            });
-                    });
-                }
+                var fldSrc = new Dictionary<string, IFolderSource>();
+                _folders = fldSrc;
+                _iterator(navFld =>
+                {
+                    var name = navFld.Ref.DisplayName;
+                    if (folderFilter(name))
+                        using (var fld = navFld.Call(_ => _.Folder))
+                        {
+                            var id = fld.Ref.FolderPath;
+                            if (!fldSrc.ContainsKey(id))
+                                fldSrc.Add(id, new FolderSource()
+                                {
+                                    ID = id,
+                                    Name = name,
+                                    IsSelected = folderSelected(name),
+                                });
+                        }
+                });
             }
 
-            public IReadOnlyList<IFolderSource> Folders => _folders;
+            public IReadOnlyDictionary<string, IFolderSource> Folders => _folders;
+            public void OnFolders(IReadOnlyDictionary<string, IFolderSource> folders, Action<IFolderSource, ICW<Outlook.MAPIFolder>> action)
+            {
+                _iterator(navFld =>
+                {
+                    var name = navFld.Ref.DisplayName;
+                        using (var fld = navFld.Call(_ => _.Folder))
+                        {
+                            var id = fld.Ref.FolderPath;
+                            if (folders.TryGetValue(id, out var fldSrc))
+                                action(fldSrc, fld);
+                        }
+                });
+            }
 
-            private ICW<Outlook.Explorer> GetExplorer(ICW<Outlook.Folder> folder)
+            private static ICW<Outlook.Explorer> GetExplorer(ICW<Outlook.Folder> folder)
             {
                 using (var app = folder.Call(_ => _.Application))
                 using (var explorers = app.Call(_ => _.Explorers))

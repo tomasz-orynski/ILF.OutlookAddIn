@@ -52,6 +52,7 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnAddAppointmentHandler
 
         private bool OnApply(CalendarsAndCategoriesModel model, Outlook.AppointmentItem appointment)
         {
+            /*
             model.Calendars
                 .Where(_ => _.IsSelected)
                 .ForEach(c =>
@@ -59,6 +60,7 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnAddAppointmentHandler
                     var categories = string.Join(",", c.Categories.Where(_ => _.IsSelected).OrderBy(_ => _.Name).Select(_ => _.Name));
                     Clone(c.Folder.Folder, appointment, categories);
                 });
+            */
             return true;
         }
 

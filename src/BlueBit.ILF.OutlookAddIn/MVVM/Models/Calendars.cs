@@ -24,9 +24,8 @@ namespace BlueBit.ILF.OutlookAddIn.MVVM.Models
             Contract.Assert(cmdCancel != null);
 
             CmdCancel = cmdCancel;
-            if (env.FoldersSource.Folders.Count > 0)
-                CmdApply = cmdApply;
-            _calendars = new Lazy<ObservableCollection<CalendarModel>>(() => new ObservableCollection<CalendarModel>(env.FoldersSource.Folders.Select(_ => new CalendarModel(_, env))));
+            CmdApply = cmdApply;
+            _calendars = new Lazy<ObservableCollection<CalendarModel>>(() => new ObservableCollection<CalendarModel>(env.FoldersSource.Folders.Select(_ => new CalendarModel(_.Value, env))));
         }
     }
 }

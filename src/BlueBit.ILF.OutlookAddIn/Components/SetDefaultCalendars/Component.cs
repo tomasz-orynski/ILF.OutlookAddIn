@@ -31,8 +31,8 @@ namespace BlueBit.ILF.OutlookAddIn.Components.SetDefaultCalendars
 
         public void Execute()
         {
+#if _X
             var window = new CalendarsWindow();
-            window.Title = Resources.SetDefaultCalendars_Caption;
             window.DataContext = new CalendarsModel(
                 _env,
                 FuncExtensions
@@ -41,6 +41,19 @@ namespace BlueBit.ILF.OutlookAddIn.Components.SetDefaultCalendars
                     .AlwaysTrue<CalendarsModel>()
                     .IfTrueThenCloseWindow(window)
                 );
+#else
+            var window = new CalendarsAndCategoriesWindow();
+            window.DataContext = new CalendarsAndCategoriesModel(
+                _env,
+                FuncExtensions
+                    .AlwaysTrue<CalendarsAndCategoriesModel>()
+                    .IfTrueThenCloseWindow(window),
+                FuncExtensions
+                    .AlwaysTrue<CalendarsAndCategoriesModel>()
+                    .IfTrueThenCloseWindow(window)
+                );
+#endif
+            window.Title = Resources.SetDefaultCalendars_Caption;
             window.ShowDialog(_logger);
         }
 

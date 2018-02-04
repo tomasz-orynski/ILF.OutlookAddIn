@@ -6,6 +6,9 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using BlueBit.ILF.OutlookAddIn.Common.Extensions.ForOutlook;
+using MoreLinq;
+using BlueBit.ILF.OutlookAddIn.Common.Extensions;
 
 namespace BlueBit.ILF.OutlookAddIn.MVVM.Models
 {
@@ -31,7 +34,18 @@ namespace BlueBit.ILF.OutlookAddIn.MVVM.Models
         {
             Contract.Assert(folder != null);
             _folder = folder;
-            _categories = new Lazy<ObservableCollection<CategoryModel>>(() => new ObservableCollection<CategoryModel>(_folder.Categories.Select(_ => new CategoryModel(_))));
+            _categories = new Lazy<ObservableCollection<CategoryModel>>(() => {
+                var result = new ObservableCollection<CategoryModel>();
+                env.FoldersSource.OnFolders(folder, (_folder, fld) =>
+                {
+                    fld
+                        .GetCategoriesFromTable()
+                        .NullAsEmpty()
+                        .Select(_ => new CategoryModel(_))
+                        .ForEach(result.Add);
+                });
+                return result;
+            });
             _isSelected = folder.IsSelected;
         }
     }
