@@ -1,15 +1,12 @@
 ﻿using BlueBit.ILF.OutlookAddIn.Common.Extensions;
 using BlueBit.ILF.OutlookAddIn.Common.Patterns;
 using BlueBit.ILF.OutlookAddIn.Common.Utils;
-using BlueBit.ILF.OutlookAddIn.Diagnostics;
 using BlueBit.ILF.OutlookAddIn.Common.Extensions.ForOutlook;
-using MoreLinq;
 using NLog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Runtime.InteropServices;
 using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace BlueBit.ILF.OutlookAddIn.Components.OnStartInit
