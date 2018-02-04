@@ -7,6 +7,7 @@ using System.Text;
 using System.Xml.Linq;
 using System.Runtime.InteropServices;
 using BlueBit.ILF.OutlookAddIn.Common.Patterns;
+using BlueBit.ILF.OutlookAddIn.Diagnostics;
 
 namespace BlueBit.ILF.OutlookAddIn.Common.Extensions.ForOutlook
 {
@@ -22,37 +23,39 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Extensions.ForOutlook
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         public static IEnumerable<(string id, string name)> GetCategoriesFromStorage(this ICW<Outlook.MAPIFolder> folder)
-        {
-            var storage = folder.Ref
-                .GetStorage(Consts.MessageClassId, Outlook.OlStorageIdentifierType.olIdentifyByMessageClass);
-            var pa = storage.PropertyAccessor;
-            var xmlStr = Encoding.ASCII.GetString((byte[])pa.GetProperty(Consts.PropertyId));
-            _logger.Trace(() => $"XML with categories [{folder.Ref.FolderPath}][{folder.Ref.Name}]:{Environment.NewLine}{xmlStr}");
-            return GetCategories(xmlStr);
-        }
+            => _logger.OnEntryCall(() =>
+            {
+                var storage = folder.Ref
+                    .GetStorage(Consts.MessageClassId, Outlook.OlStorageIdentifierType.olIdentifyByMessageClass);
+                var pa = storage.PropertyAccessor;
+                var xmlStr = Encoding.ASCII.GetString((byte[])pa.GetProperty(Consts.PropertyId));
+                _logger.Trace(() => $"XML with categories [{folder.Ref.FolderPath}][{folder.Ref.Name}]:{Environment.NewLine}{xmlStr}");
+                return GetCategories(xmlStr);
+            });
 
         public static IEnumerable<(string id, string name)> GetCategoriesFromTable(this ICW<Outlook.MAPIFolder> folder)
-        {
-            var builder = new StringBuilder();
-            var filter = $"[{Consts.MessageClass}] = '{Consts.MessageClassId}'";
-            using (var table = folder.Call(_ => _.GetTable(filter, Outlook.OlTableContents.olHiddenItems)))
-            using (var columns = table.Call(_ => _.Columns))
-            using (var column = columns.Call(_ => _.Add(Consts.PropertyId)))
+            => _logger.OnEntryCall(() =>
             {
-                while (!table.Ref.EndOfTable)
+                var builder = new StringBuilder();
+                var filter = $"[{Consts.MessageClass}] = '{Consts.MessageClassId}'";
+                using (var table = folder.Call(_ => _.GetTable(filter, Outlook.OlTableContents.olHiddenItems)))
+                using (var columns = table.Call(_ => _.Columns))
+                using (var column = columns.Call(_ => _.Add(Consts.PropertyId)))
                 {
-                    using (var row = table.Call(_ => _.GetNextRow()))
+                    while (!table.Ref.EndOfTable)
                     {
-                        var obj = row.Ref[Consts.PropertyId];
-                        var prop = (byte[])obj;
-                        builder.Append(Encoding.UTF8.GetString(prop));
+                        using (var row = table.Call(_ => _.GetNextRow()))
+                        {
+                            var obj = row.Ref[Consts.PropertyId];
+                            var prop = (byte[])obj;
+                            builder.Append(Encoding.UTF8.GetString(prop));
+                        }
                     }
                 }
-            }
-            var xmlStr = builder.ToString();
-            _logger.Trace(() => $"XML with categories [{folder.Ref.FolderPath}][{folder.Ref.Name}]:{Environment.NewLine}{xmlStr}");
-            return GetCategories(xmlStr);
-        }
+                var xmlStr = builder.ToString();
+                _logger.Trace(() => $"XML with categories [{folder.Ref.FolderPath}][{folder.Ref.Name}]:{Environment.NewLine}{xmlStr}");
+                return GetCategories(xmlStr);
+            });
 
         private static IEnumerable<(string id, string name)> GetCategories(string xmlStr)
         {

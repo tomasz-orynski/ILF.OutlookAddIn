@@ -28,7 +28,9 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Patterns
         protected override void OnDispose()
         {
             if (_ref != null)
-                Marshal.FinalReleaseComObject(Ref);
+            {
+                var count = Marshal.FinalReleaseComObject(Ref);
+            }
         }
     }
 
@@ -50,6 +52,13 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Patterns
             where TProp : class
             => getter(@this.Ref).AsCW();
 
+        public static ICW<TProp> Call_<T, TProp>(this ICW<T> @this, Func<T, TProp> getter)
+            where T : class
+            where TProp : class
+        {
+            using (@this)
+                return @this.Call(getter);
+        }
 
         public static void ForEach<T, TItem>(this ICW<T> @this, Action<ICW<TItem>> action)
             where T : class, IEnumerable
@@ -58,6 +67,13 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Patterns
             foreach (TItem item in @this.Ref)
                 using (var itemCw = item.AsCW())
                     action(itemCw);
+        }
+        public static void ForEach_<T, TItem>(this ICW<T> @this, Action<ICW<TItem>> action)
+            where T : class, IEnumerable
+            where TItem : class
+        {
+            using (@this)
+                @this.ForEach(action);
         }
     }
 }

@@ -50,47 +50,37 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnStartInit
                 Contract.Assert(folderFilter != null);
                 Contract.Assert(folderSelected != null);
 
-                using (var explorer = GetExplorer(rootFolder))
-                using (var navPane = explorer.Call(_ => _.NavigationPane))
-                using (var mods = navPane.Call(_ => _.Modules))
-                using (var navMod = mods.Call(_ => _.GetNavigationModule(Outlook.OlNavigationModuleType.olModuleCalendar).As<Outlook.CalendarModule>()))
-                using (var navGrps = navMod.Call(_ => _.NavigationGroups))
-                {
-                    var fldSrc = new List<FolderSource>();
-                    _folders = fldSrc;
-
-                    navGrps.ForEach((ICW<Outlook.NavigationGroup> navGrp) => {
-                        using (var navFlds = navGrp.Call(_ => _.NavigationFolders))
-                            navFlds.ForEach((ICW<Outlook.NavigationFolder> navFld) =>
+                var fldSrc = new List<FolderSource>();
+                rootFolder
+                    .Call(_ => _.Application)
+                    .Call_(_ => _.Explorers)
+                    .ForEach_((ICW<Outlook.Explorer> explorer) =>
+                    {
+                        explorer
+                            .Call(_ => _.NavigationPane)
+                            .Call_(_ => _.Modules)
+                            .Call_(_ => (Outlook.CalendarModule)_.GetNavigationModule(Outlook.OlNavigationModuleType.olModuleCalendar))
+                            .Call_(_ => _.NavigationGroups)
+                            .ForEach_((ICW<Outlook.NavigationGroup> navGrp) =>
                             {
-                                var name = navFld.Ref.DisplayName;
-                                if (folderFilter(name))
-                                        fldSrc.Add(new FolderSource(navFld.Call(_ => _.Folder)) {
-                                            Name = name,
-                                            IsSelected = folderSelected(name),
-                                        });
+                                navGrp
+                                    .Call(_ => _.NavigationFolders)
+                                    .ForEach_((ICW<Outlook.NavigationFolder> navFld) =>
+                                    {
+                                        var name = navFld.Ref.DisplayName;
+                                        if (folderFilter(name))
+                                            fldSrc.Add(new FolderSource(navFld.Call(_ => _.Folder))
+                                            {
+                                                Name = name,
+                                                IsSelected = folderSelected(name),
+                                            });
+                                    });
                             });
                     });
-                }
+                _folders = fldSrc;
             }
 
             public IReadOnlyList<IFolderSource> Folders => _folders;
-
-            private ICW<Outlook.Explorer> GetExplorer(ICW<Outlook.Folder> folder)
-            {
-                using (var app = folder.Call(_ => _.Application))
-                using (var explorers = app.Call(_ => _.Explorers))
-                {
-                    foreach (Outlook.Explorer explorer in explorers.Ref)
-                    {
-                        using (var expFld = explorer.CurrentFolder.AsCW())
-                            if (expFld.Ref.FolderPath == folder.Ref.FolderPath)
-                                return explorer.AsCW();
-                        Marshal.ReleaseComObject(explorer);
-                    }
-                }
-                return folder.Call(_ => _.GetExplorer());
-            }
         }
     }
 }

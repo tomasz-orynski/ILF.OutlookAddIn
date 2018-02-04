@@ -1,13 +1,10 @@
 ﻿using BlueBit.ILF.OutlookAddIn.Common.Extensions;
-using BlueBit.ILF.OutlookAddIn.Common.Utils;
 using BlueBit.ILF.OutlookAddIn.Diagnostics;
 using BlueBit.ILF.OutlookAddIn.MVVM.Models;
 using BlueBit.ILF.OutlookAddIn.MVVM.Views;
 using BlueBit.ILF.OutlookAddIn.Properties;
 using NLog;
-using System;
 using System.Linq;
-using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace BlueBit.ILF.OutlookAddIn.Components.SetDefaultCalendars
 {
