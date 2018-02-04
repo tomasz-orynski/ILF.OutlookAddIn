@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace BlueBit.ILF.OutlookAddIn.Common.Patterns
@@ -28,7 +27,7 @@ namespace BlueBit.ILF.OutlookAddIn.Common.Patterns
         protected override void OnDispose()
         {
             if (_ref != null)
-                Marshal.FinalReleaseComObject(Ref);
+                Marshal.ReleaseComObject(Ref);
         }
     }
 

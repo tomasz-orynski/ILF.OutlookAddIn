@@ -51,6 +51,10 @@ namespace BlueBit.ILF.OutlookAddIn.Components.OnStartInit
                             using (var navFlds = navGrp.Call(_ => _.NavigationFolders))
                                 navFlds.ForEach(action);
                         });
+
+                    //hack
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
                 };
 
                 var fldSrc = new Dictionary<string, IFolderSource>();
